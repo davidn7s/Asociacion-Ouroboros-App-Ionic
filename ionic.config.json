@@ -1,0 +1,7 @@
+{
+  "name": "asociacionOuroboros",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
