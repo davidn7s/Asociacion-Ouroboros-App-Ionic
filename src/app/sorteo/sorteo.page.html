@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    
+    <!--Boton menú-->
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+
+    <!--Botones-->
+    <ion-buttons slot="end">
+
+      <!--Boton sortear-->
+      <ion-button *ngIf="contador>=1" (click)=" sortear()">
+        <ion-icon slot="icon-only" name="dice-outline"></ion-icon>
+      </ion-button>
+
+      <!--Boton añadir-->
+      <ion-button (click)=" annadirP()">
+        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <!--Título-->
+    <ion-title>Sorteo {{fechaActual}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<!--Barra de búsqueda-->
+<ion-searchbar debounce="100" placeholder="Buscar participante" (ionChange)="buscar($event)"></ion-searchbar>
+
+<!--Contadores-->
+<ion-item>
+  Hay {{contador}} participantes
+  <br />
+  Hay {{contadorTot}} participaciones totales
+</ion-item>
+
+<ion-content>
+  <!--Lista de participantes-->
+  <ion-list *ngFor="let p of participantes | filtro: textoBuscar: 'nombre' : 'nombre' : false">
+    <ion-card (click)="opciones(p)">
+      <ion-row>
+        <ion-col size="9"> {{p.nombre}} {{p.apellidos}} </ion-col>
+        <ion-col size="3"> {{p.puntos}} </ion-col>
+      </ion-row>
+    </ion-card>
+  </ion-list>
+</ion-content>

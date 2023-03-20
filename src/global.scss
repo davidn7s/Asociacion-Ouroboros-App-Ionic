@@ -24,3 +24,38 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+
+ion-icon,ion-menu-button{
+    color: #83100F;
+  }
+
+  ion-checkbox {
+    --background-checked: red;
+  }
+
+  ion-checkbox::part(container) {
+    border: 2px solid #83100F;
+  }
+
+input, textarea {
+    background-color: #979494;
+  }
+
+
+  .app-alert .alert-wrapper{
+    .alert-button-inner{
+      color:red;
+    }
+  }
+
+  ion-item.item-has-focus > ion-label{
+    color: red !important;
+  }
+
+  ion-item.item-has-focus {
+    --highlight-background:red;
+}
+
+  
+

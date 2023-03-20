@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+
+    <ion-buttons slot="start">
+      <ion-button ion-button (click)="closeModal()"
+        ><ion-icon name="arrow-back-outline"></ion-icon
+      ></ion-button>
+    </ion-buttons>
+
+       <!--Botones-->
+       <ion-buttons slot="end">
+
+        <!--Boton sortear-->
+        <ion-button (click)=" sortear()" [disabled]="deshabilitar()">
+          <ion-icon slot="icon-only" name="dice-outline"></ion-icon>
+        </ion-button>
+        </ion-buttons>
+
+    <ion-title>Sortear</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-item>
+  <ion-label position="stacked" color="withe">Cantidad de elegidos</ion-label>
+  <input type="number" placeholder="Cantidad" [(ngModel)]="cantidad" min=1 max={{tope}} />
+</ion-item>
+
+<ion-content>
+  <ion-list *ngFor="let p of escogidos">
+    <ion-card>
+      {{p}}
+    </ion-card>
+  </ion-list>
+
+</ion-content>

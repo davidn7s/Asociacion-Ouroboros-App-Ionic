@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button ion-button (click)="closeModal()"
+        ><ion-icon name="arrow-back-outline"></ion-icon
+      ></ion-button>
+    </ion-buttons>
+
+    <ion-title>Añadir Participante</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form
+    [formGroup]="validations_form"
+    (ngSubmit)="onSubmit(validations_form.value)"
+  >
+    <ion-item>
+      <ion-label position="stacked" color="withe">Nombre</ion-label>
+      <input type="text" placeholder="Nombre" formControlName="nombre" />
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked" color="withe">Apellidos</ion-label>
+      <input type="text" placeholder="Apellidos" formControlName="apellidos" />
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked"  color="withe">Puntos</ion-label>
+      <input type="number" placeholder="Puntos" formControlName="puntos" min=1/>
+    </ion-item>
+
+    <ion-button
+      color="danger"
+      class="submit-btn"
+      expand="block"
+      type="submit"
+      [disabled]="!validations_form.valid"
+      >Listo</ion-button
+    >
+  </form>
+</ion-content>
