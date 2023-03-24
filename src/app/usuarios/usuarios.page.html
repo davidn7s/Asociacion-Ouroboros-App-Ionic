@@ -1,0 +1,71 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+
+
+     <!--Boton añadir-->
+     <ion-buttons slot="end">
+      <ion-button (click)=" registrarUsu()">
+        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+
+    <ion-title>Usuarios</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<!--Barra de búsqueda-->
+<ion-searchbar
+  debounce="100"
+  placeholder="Buscar usuario"
+  (ionChange)="buscar($event)"
+></ion-searchbar>
+
+<!--Select de tipo-->
+<ion-item>
+  <ion-label position="floating" color="danger">Tipo</ion-label>
+  <ion-select
+    [(ngModel)]="tipo"
+    (ionChange)="cambioTipo()"
+    interface="popover"
+    cancelText="Cancelar"
+    okText="Aceptar"
+  >
+    <ion-select-option value="todo">Todo</ion-select-option>
+    <ion-select-option value="true"
+      >Administrador</ion-select-option
+    >
+    <ion-select-option value="false"
+      >No Administrador</ion-select-option
+    >
+  </ion-select>
+</ion-item>
+<ion-content>
+  <ion-list
+    *ngFor="let usuario of usuariosMuestra | filtro: textoBuscar: 'nombre': 'apellidos' : false"
+  >
+    <ion-card>
+      <ion-card-content>
+        <ion-grid>
+          <!--Abrir opciones (modificación o borrado)-->
+          <ion-row (click)="opciones(usuario)">
+            <ion-col size="9">
+              {{usuario.nombre}} {{usuario.apellidos}}
+            </ion-col>
+            <!--Símbolo Checkmark si es administrador-->
+            <ion-col *ngIf="usuario.gestor" size="1">
+              <ion-icon name="star" class="star"></ion-icon>
+            </ion-col>
+
+            <ion-col *ngIf="!usuario.estado" size="1">
+              <ion-icon name="close"></ion-icon>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+</ion-content>

@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <!--Botón cerrar modal-->
+    <ion-buttons slot="start">
+      <ion-button ion-button (click)="closeModal()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{usuario.nombre}} {{usuario.apellidos}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-label position="floating" color="danger">Nombre</ion-label>
+    <ion-input type="text" [(ngModel)]="usuario.nombre"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating" color="danger">Apellidos</ion-label>
+    <ion-input type="text" [(ngModel)]="usuario.apellidos"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating" color="danger">E-mail</ion-label>
+    <ion-input type="email" [(ngModel)]="usuario.email"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating" color="danger">Cargo</ion-label>
+    <ion-input type="text" [(ngModel)]="usuario.cargo"></ion-input>
+  </ion-item>
+
+
+
+
+  <!-- Boton de submit-->
+  <ion-button color="danger" class="submit-btn" expand="block" (click)="modificar()" [disabled]="deshabilitado()">
+    Modificar</ion-button>
+</ion-content>
