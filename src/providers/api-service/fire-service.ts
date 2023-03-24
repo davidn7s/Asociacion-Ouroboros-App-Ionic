@@ -7,6 +7,7 @@ import { AlertController, ToastController } from '@ionic/angular';
 //import { Juego } from 'src/modelo/Juego';
 //import { JuegoEvento } from 'src/modelo/JuegoEvento';
 import { Participante } from 'src/modelo/Participante';
+import { Usuario } from 'src/modelo/Usuario';
 //import { Usuario } from 'src/modelo/Usuario';
 
 @Injectable()
@@ -112,7 +113,7 @@ export class FireServiceProvider {
   //============
   //| Getters |
   //============
-  /*getUsuarios(): Promise<Usuario[]> {
+  getUsuarios(): Promise<Usuario[]> {
     let promise = new Promise<Usuario[]>((resolve, reject) => {
       const usuariosRef = this.angularFirestore.collection('Usuarios');
       const snapshot = usuariosRef
@@ -120,7 +121,7 @@ export class FireServiceProvider {
         .toPromise()
         .then((data: any) => {
           let usuarios = new Array<Usuario>();
-          data.forEach((element) => {
+          data.forEach((element:any) => {
             let usuarioJson = element.data();
             let usuario = Usuario.createFromJsonObject(usuarioJson);
             usuarios.push(usuario);
@@ -134,7 +135,7 @@ export class FireServiceProvider {
     return promise;
   }
 
-  getAlmacenamiento(): Promise<Almacenamiento[]> {
+/*  getAlmacenamiento(): Promise<Almacenamiento[]> {
     let promise = new Promise<Almacenamiento[]>((resolve, reject) => {
       const usuariosRef = this.angularFirestore.collection('Almacenamiento');
       const snapshot = usuariosRef
@@ -161,8 +162,8 @@ export class FireServiceProvider {
   //==============
   //| Getters By |
   //==============
-/*
-  getUsuarioByEmail(email): Promise<Usuario> {
+
+  getUsuarioByEmail(email:string): Promise<Usuario> {
     let promise = new Promise<Usuario>((resolve, reject) => {
       const usuariosRef = this.angularFirestore.collection('Usuarios').ref;
       usuariosRef
@@ -170,7 +171,7 @@ export class FireServiceProvider {
         .get()
         .then((data: any) => {
           let usuario = new Usuario();
-          data.forEach((element) => {
+          data.forEach((element:any) => {
             let usuarioJson = element.data();
             usuario = Usuario.createFromJsonObject(usuarioJson);
           });
@@ -183,7 +184,7 @@ export class FireServiceProvider {
     return promise;
   } //end get usuarios
 
-  getUsuarioById(id): Promise<Usuario> {
+  getUsuarioById(id:any): Promise<Usuario> {
     let promise = new Promise<Usuario>((resolve, reject) => {
       const usuariosRef = this.angularFirestore.collection('Usuarios').ref;
       usuariosRef
@@ -191,7 +192,7 @@ export class FireServiceProvider {
         .get()
         .then((data: any) => {
           let usuario = new Usuario();
-          data.forEach((element) => {
+          data.forEach((element:any) => {
             let usuarioJson = element.data();
             usuario = Usuario.createFromJsonObject(usuarioJson);
           });
@@ -203,7 +204,7 @@ export class FireServiceProvider {
     });
     return promise;
   } //end get usuarios
-*/
+
   //======================================================================================
 
   //==============

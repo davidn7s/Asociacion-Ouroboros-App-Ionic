@@ -23,6 +23,10 @@ const routes: Routes = [
     path: 'annadir',
     loadChildren: () => import('./annadir/annadir.module').then( m => m.AnnadirPageModule)
   },
+  {
+    path: 'login',
+    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
+  },
 ];
 
 @NgModule({
