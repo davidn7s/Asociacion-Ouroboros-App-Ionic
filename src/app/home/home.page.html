@@ -26,6 +26,6 @@
   <p>Aplicación destinada a la simplifación y mejora de las actividades que desempeñamos.</p>
 </ion-row>
 <!---->
-
+<ion-button  *ngIf="globalUsu.id==null"  color="rojo" expand="block" [routerLink]="['/login']">Login</ion-button>
 </ion-grid>
 </ion-content>

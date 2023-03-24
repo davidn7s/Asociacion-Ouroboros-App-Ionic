@@ -2,13 +2,10 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, fromCollectionRef } from '@angular/fire/compat/firestore';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { AlertController, ToastController } from '@ionic/angular';
-//import { Almacenamiento } from 'src/modelo/Almacenamiento';
-//import { Evento } from 'src/modelo/Evento';
-//import { Juego } from 'src/modelo/Juego';
-//import { JuegoEvento } from 'src/modelo/JuegoEvento';
+import { Almacenamiento } from 'src/modelo/Almacenamiento';
+import { Juego } from 'src/modelo/Juego';
 import { Participante } from 'src/modelo/Participante';
 import { Usuario } from 'src/modelo/Usuario';
-//import { Usuario } from 'src/modelo/Usuario';
 
 @Injectable()
 export class FireServiceProvider {
@@ -244,7 +241,7 @@ export class FireServiceProvider {
   //| Deletes |
   //===========
 
-  /*
+  
   eliminarUsuario(usuario: Usuario, valor: boolean): Promise<Boolean> {
     let promise = new Promise<Boolean>((resolve, reject) => {
       this.angularFirestore.collection('Usuarios').doc(usuario.id).delete().then(
@@ -307,7 +304,7 @@ export class FireServiceProvider {
     });
     return promise;
   } //end_eliminar_usuario
-*/
+
   eliminarParticipante(participante: Participante): Promise<Boolean> {
     //Nombre coleccion por fecha de evento
     let fecha = new Date();
@@ -360,7 +357,7 @@ export class FireServiceProvider {
   //| Updates |
   //===========
 
-/*
+
   modificarUsuario(nuevosDatosUsuario: Usuario): Promise<Usuario> {
     let promise = new Promise<Usuario>((resolve, reject) => {
       this.angularFirestore
@@ -396,7 +393,7 @@ export class FireServiceProvider {
     return promise;
   } //end_modificar_juego
 
-  */
+  
 
   modificarParticipante(
     nuevosDatosParticipante: Participante
@@ -463,7 +460,7 @@ export class FireServiceProvider {
   //===========
 
 
-  /*
+  
   insertarUsuario(datosNuevoUsuario: Usuario): Promise<Usuario> {
     let promise = new Promise<Usuario>((resolve, reject) => {
       datosNuevoUsuario.id = this.angularFirestore
@@ -504,7 +501,7 @@ export class FireServiceProvider {
     });
     return promise;
   } //end_insertarjuego
-
+/*
   insertarJuegosEventos(datosNuevoJuego: JuegoEvento,fecha:Date): Promise<JuegoEvento> {
     //Nombre coleccion por fecha de evento
     let nombre:string=`Juegos-${fecha.getDate()}.${fecha.getMonth()+1}.${fecha.getFullYear()}`
@@ -532,8 +529,8 @@ export class FireServiceProvider {
     });
     return promise;
   } //end_insertarjuego
-
 */
+
   
 
   insertarParticipante(

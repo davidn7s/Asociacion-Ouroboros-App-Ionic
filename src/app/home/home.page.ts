@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Usuario } from 'src/modelo/Usuario';
+import { AppComponent } from '../app.component';
+import { GlobalMethodsService } from '../global-methods.service';
 
 @Component({
   selector: 'app-home',
@@ -7,8 +10,28 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-  constructor() {}
+  //============================================================================================================
 
-  
+  //===========
+  //|Atributos|
+  //===========
+  globalUsu: Usuario = new Usuario();
+
+  constructor(private appComponent: AppComponent, private globalVar: GlobalMethodsService,) { }
+
+
+
+  //============================================================================================================
+
+  //=============
+  //|Fases Ionic|
+  //=============
+  ionViewWillEnter() {
+    //this.appComponent.getGlobalUsu();
+    this.globalUsu = this.globalVar.usuGlobal;
+  }
+
+
+
 
 }
