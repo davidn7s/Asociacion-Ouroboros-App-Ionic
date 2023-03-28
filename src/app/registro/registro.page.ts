@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoadingController, MenuController, ToastController } from '@ionic/angular';
 import { Usuario } from 'src/modelo/Usuario';
@@ -12,6 +13,17 @@ import { FirebaseAuthService } from 'src/providers/api-service/firebase-auth-ser
 })
 export class RegistroPage implements OnInit {
 
+  //======================================================================================================================================
+
+  //===========
+  //|Atributos|
+  //===========
+
+  validations_form!: FormGroup;
+  matching_passwords_group!: FormGroup;
+
+  validation_messages:any;
+
   usuario: Usuario = new Usuario();
   contrasenna: string = '';
   repetirContrasenna: string = '';
@@ -23,10 +35,45 @@ export class RegistroPage implements OnInit {
     private firebaseService: FireServiceProvider,
     private fireAuth: FirebaseAuthService,
     private menu: MenuController,
-    private toastCtrl:ToastController,
-    private router:Router,
-    private loadingCtrl:LoadingController
-  ) { }
+    private toastCtrl: ToastController,
+    private router: Router,
+    private loadingCtrl: LoadingController,
+    private formBuilder: FormBuilder
+  ) {
+    this.validation_messages = {
+      nombre: [{ type: 'required', message: 'El nombre es obligatorio.' }],
+      apellidos: [
+        { type: 'required', message: 'Los apellidos son obligatorios.' },
+      ],
+      email: [
+        { type: 'required', message: 'El correo electronico es obligatorio.' },
+        { type: 'pattern', message: 'Introduzca un correo electrónico válido.' },
+      ],
+  
+      cargo: [
+        { type: 'required', message: 'El cargo es obligatorio.' }
+      ],
+      password: [
+        { type: 'required', message: 'La contraseña es obligatoria' },
+        {
+          type: 'minlength',
+          message: 'La contraseña debe ser miníma de 8 caracteres.',
+        },
+        {
+          type: 'pattern',
+          message:
+            'Tu contraseña tiene que contener al menos una mayuscula, una minúscula y un número.',
+        },
+      ],
+      confirmPassword: [
+        { type: 'required', message: 'Es necesario confirmar la contraseña.' },
+      ],
+      matching_passwords: [
+        { type: 'confirmPassword', message: 'Las contraseñas no coinciden.' },
+      ],
+    };
+
+   }
 
 
   //======================================================================================================================================
@@ -36,6 +83,61 @@ export class RegistroPage implements OnInit {
   //=============
 
   ngOnInit() {
+    this.matching_passwords_group = new FormGroup(
+      {
+        password: new FormControl(
+          '',
+          Validators.compose([
+            Validators.maxLength(15),
+            Validators.minLength(8),
+            Validators.pattern(
+              '^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*$'
+            ),
+            Validators.required,
+          ])
+        ),
+        confirmPassword: new FormControl('', Validators.required),
+      },
+      (formGroup: any) => {
+        return this.confirmPassword(formGroup);
+      }
+    );
+
+    this.validations_form = this.formBuilder.group({
+      nombre: new FormControl(
+        '',
+        Validators.compose([
+          Validators.maxLength(25),
+          Validators.minLength(3),
+          Validators.required,
+        ])
+      ),
+      apellidos: new FormControl(
+        '',
+        Validators.compose([
+          Validators.maxLength(25),
+          Validators.minLength(3),
+          Validators.required,
+        ])
+      ),
+      email: new FormControl(
+        '',
+        Validators.compose([
+          Validators.required,
+          Validators.pattern(
+            '^[a-zA-Z0-9_.+-]+[@]{1}[a-zA-Z0-9-]+[.]{1}[a-zA-Z]+$'
+          ),
+        ])
+      ),
+      cargo: new FormControl(
+        '',
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(3)
+        ])
+      ),
+      matching_passwords: this.matching_passwords_group,
+    });
   }//end ngOnInit
 
   ionViewWillEnter() {
@@ -54,10 +156,10 @@ export class RegistroPage implements OnInit {
   //|Firebase|
   //==========
 
-  insertar() {
+  insertar(usuario:Usuario, contrasenna: string) {
     this.pantallaCarga();
     this.fireAuth
-      .loginUser(this.usuario.email, this.contrasenna)
+      .loginUser(usuario.email, contrasenna)
       .then((usuario: Usuario) => {
         this.presentToast(
           'Error, email ya registrado, no se ha podido registrarse el usuario'
@@ -66,10 +168,10 @@ export class RegistroPage implements OnInit {
       })
       .catch((error: string) => {
         this.firebaseService
-          .insertarUsuario(this.usuario)
+          .insertarUsuario(usuario)
           .then(() => {
             this.fireAuth
-              .registerUser(this.usuario.email, this.contrasenna)
+              .registerUser(usuario.email, contrasenna)
               .then((data) => {
                 this.cerrarCarga();
                 this.presentToast('Registro completado');
@@ -77,7 +179,8 @@ export class RegistroPage implements OnInit {
               })
               .catch((error) => {
                 this.cerrarCarga();
-                this.firebaseService.eliminarUsuario(this.usuario, false);
+                console.log(error)
+                this.firebaseService.eliminarUsuario(usuario, false);
               });
           })
           .catch((error: string) => {});
@@ -108,39 +211,25 @@ export class RegistroPage implements OnInit {
   //|Otros métodos|
   //===============
 
-  deshabilitado() {
-    if (this.usuario.nombre == '') {
-      return true;
-    }
-    if (this.usuario.nombre.length < 3) {
-      return true;
-    }
-    if (this.usuario.apellidos == '') {
-      return true;
-    }
-    if (this.usuario.apellidos.length < 3) {
-      return true;
-    }
-    if (this.usuario.email == '') {
-      return true;
-    }
-    if (this.usuario.cargo == '') {
-      return true;
-    }
-    if (this.contrasenna == '') {
-      return true;
-    }
-    if (this.repetirContrasenna == '') {
-      return true;
-    }
-    if (this.contrasenna != this.repetirContrasenna) {
-      return true;
-    }//end deshabilitar
+  onSubmit(values:any) {
+    let usuario = new Usuario();
+    usuario.nombre = values.nombre;
+    usuario.apellidos = values.apellidos;
+    usuario.email = values.email;
+    usuario.cargo = values.cargo;
+    this.insertar(usuario, values.matching_passwords.password);
+
+    console.log(usuario)
+  } //end onSubmit
 
 
 
-    return false;
-  } // end deshabilitado
+  confirmPassword(fg: FormGroup) {
+    if (fg.controls['password'].value != fg.controls['confirmPassword'].value)
+      return { confirmPassword: true };
+    else return null;
+  } //end confirmPassword
+
 
   togglePassword() {
     this.showPassword = !this.showPassword;
@@ -152,7 +241,7 @@ export class RegistroPage implements OnInit {
   }//end togglePassword
 
 
-  
+
   async pantallaCarga() {
     const loading = await this.loadingCtrl.create({
       message: 'Registrando usuario ...',

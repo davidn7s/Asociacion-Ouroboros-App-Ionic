@@ -4,17 +4,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { AnnadirPageRoutingModule } from './annadir-routing.module';
+import { RegistroPageRoutingModule } from './registro-routing.module';
 
-import { AnnadirPage } from './annadir.page';
+import { RegistroPage } from './registro.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    AnnadirPageRoutingModule, 
-    ReactiveFormsModule],
-  declarations: [AnnadirPage]
+    RegistroPageRoutingModule,
+    ReactiveFormsModule
+  ],
+  declarations: [RegistroPage]
 })
-export class AnnadirPageModule { }
+export class RegistroPageModule {}
