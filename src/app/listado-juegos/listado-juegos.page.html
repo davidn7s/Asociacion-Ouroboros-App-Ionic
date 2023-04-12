@@ -1,0 +1,74 @@
+<ion-header>
+  <ion-toolbar>
+    
+    <!--Boton menú-->
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+
+    <!--Boton añadir  *ngIf="globalUsu.gestor"-->
+    <ion-buttons  slot="end">
+      <ion-button (click)=" annadirJuego()">
+        <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Juegos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<!--Barra de búsqueda-->
+<ion-searchbar
+  debounce="100"
+  placeholder="Buscar juego"
+  (ionChange)="buscar($event)"
+></ion-searchbar>
+
+<ion-content>
+  <ion-list *ngFor="let juego of juegos | filtro: textoBuscar: 'nombre' : 'editorial': false">
+    <ion-card>
+      <ion-row>
+        <ion-col size="9">{{juego.gameId}} </ion-col>
+
+         <!--Modificacion juegos-->
+        <ion-col  size="1" > 
+          <button class="icono"  ion-button icon-only (click)="modificarJuego(juego)"  >
+            <ion-icon name="pencil-outline"></ion-icon>
+          </button></ion-col>
+          <ion-col size=1 >
+            <button class="icono" ion-button icon-only (click)="confirmar(juego)">
+              <ion-icon name="trash-outline"></ion-icon>
+            </button>
+          </ion-col>
+        
+        </ion-row>
+      <ion-card-content>
+        <ion-row>
+          <ion-col size="4">
+            <ion-img *ngIf="juego.imagen!=''" src={{juego.imagen}}></ion-img>
+      <ion-img *ngIf="juego.imagen==''" src="..\..\assets\icon\404.png"></ion-img>
+          </ion-col>
+
+          <ion-col size="8">
+            <ion-row>
+              <h3><strong>{{juego.nombre}}</strong></h3>
+            </ion-row>
+            <ion-row *ngIf="juego.editorial!='-'">
+              <strong>Editorial: </strong> {{juego.editorial}}
+            </ion-row>
+            <ion-row>
+              <strong>Edad Mínima: </strong> {{juego.edadMinima}}
+            </ion-row>
+            <ion-row>
+              <strong>Jugadores: </strong> {{juego.jugadores}}
+            </ion-row>
+            <ion-row *ngIf="juego.tiempoJuegoMin!='-'">
+              <strong>Tiempo de juego: </strong> {{juego.tiempoJuegoMin}} min
+            </ion-row>
+            <ion-row> <strong>Cantidad: </strong> {{juego.cantidad}} </ion-row>
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+</ion-content>

@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar>
+    <!--Volver atras-->
+    <ion-buttons slot="start">
+      <ion-button ion-button (click)="closeModal()"><ion-icon name="arrow-back-outline"></ion-icon></ion-button>
+    </ion-buttons>
+
+    <ion-title *ngIf="juegoNuevo.nombre==''">Nuevo Juego</ion-title>
+    <ion-title *ngIf="juegoNuevo.nombre!=''">{{juegoNuevo.nombre}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="validations_form" (ngSubmit)="onSubmit()">
+
+    <ion-item>
+      <ion-label position="stacked" color="withe">Nombre</ion-label>
+      <input type="text" placeholder="Nombre" formControlName="nombre" />
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked" color="withe">Editorial</ion-label>
+      <input type="text" placeholder="Editorial" formControlName="editorial" />
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked" color="withe">Edad Mínima</ion-label>
+      <input type="number" placeholder="Edad Mínima" formControlName="edadMin" min="1" />
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked" color="withe">Jugadores</ion-label>
+      <input type="text" placeholder="Jugadores" formControlName="jugadores" />
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked" color="withe">Tiempo de juego</ion-label>
+      <input type="text" placeholder="Tiempo de juego" formControlName="tiempoJuego" />
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked" color="withe">Cantidad</ion-label>
+      <input type="number" placeholder="Cantidad" formControlName="cantidad" min="1" />
+    </ion-item>
+    <ion-item>
+      <ion-img *ngIf="juegoNuevo.imagen!=''" src={{juegoNuevo.imagen}}></ion-img>
+      <ion-img *ngIf="juegoNuevo.imagen==''" src="..\..\assets\icon\404.png"></ion-img>
+    </ion-item>
+
+    <ion-input type="text" formControlName="imagen" hidden></ion-input>
+    <ion-button color="rojo" id="rojo2" shape="round" size="medium">
+      <input type="file" (change)="imageOnChange($event)" />
+    </ion-button>
+    <ion-button id="rojo" color="rojo" class="submit-btn" expand="block" type="submit" [disabled]="validations_form.invalid">Listo</ion-button> 
+  </form>
+
+
+</ion-content>

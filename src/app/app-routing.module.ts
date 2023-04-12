@@ -39,6 +39,14 @@ const routes: Routes = [
     path: 'registro',
     loadChildren: () => import('./registro/registro.module').then( m => m.RegistroPageModule)
   },
+  {
+    path: 'listado-juegos',
+    loadChildren: () => import('./listado-juegos/listado-juegos.module').then( m => m.ListadoJuegosPageModule)
+  },
+  {
+    path: 'annadir-juego',
+    loadChildren: () => import('./annadir-juego/annadir-juego.module').then( m => m.AnnadirJuegoPageModule)
+  },
 ];
 
 @NgModule({
