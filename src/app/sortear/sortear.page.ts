@@ -58,7 +58,6 @@ export class SortearPage implements OnInit {
   //===============
 
   sortear() {
-    console.log(this.participantesSortear)
     this.escogidos = new Array();
     let existe = false;
 
@@ -71,15 +70,12 @@ export class SortearPage implements OnInit {
         let participante: string = this.participantesSortear[escogido];
         if (!this.escogidos.includes(participante)) {
           this.escogidos.push(participante);
-          console.log(escogido)
-          console.log(participante)
           while (this.participantesSortear.includes(participante)) {
             this.participantesSortear.splice(this.participantesSortear.indexOf(participante), 1);
           }
           existe = true;
         }
       }
-      console.log(this.participantesSortear)
 
     }
 
