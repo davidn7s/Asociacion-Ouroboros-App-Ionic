@@ -4,6 +4,7 @@ import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { AlertController, ToastController } from '@ionic/angular';
 import { Almacenamiento } from 'src/modelo/Almacenamiento';
 import { Juego } from 'src/modelo/Juego';
+import { JuegoEvento } from 'src/modelo/JuegoEvento';
 import { Participante } from 'src/modelo/Participante';
 import { Usuario } from 'src/modelo/Usuario';
 
@@ -44,7 +45,7 @@ export class FireServiceProvider {
       // File upload task
       this.afStorage
         .upload(fileStoragePath, file)
-        .then((data:any) => {
+        .then((data: any) => {
           pdfRef.getDownloadURL().subscribe((resp) => {
             resolve(resp);
           });
@@ -118,7 +119,7 @@ export class FireServiceProvider {
         .toPromise()
         .then((data: any) => {
           let usuarios = new Array<Usuario>();
-          data.forEach((element:any) => {
+          data.forEach((element: any) => {
             let usuarioJson = element.data();
             let usuario = Usuario.createFromJsonObject(usuarioJson);
             usuarios.push(usuario);
@@ -132,35 +133,35 @@ export class FireServiceProvider {
     return promise;
   }
 
-/*  getAlmacenamiento(): Promise<Almacenamiento[]> {
-    let promise = new Promise<Almacenamiento[]>((resolve, reject) => {
-      const usuariosRef = this.angularFirestore.collection('Almacenamiento');
-      const snapshot = usuariosRef
-        .get()
-        .toPromise()
-        .then((data: any) => {
-          let almacenamiento = new Array<Almacenamiento>();
-          data.forEach((element) => {
-            let usuarioJson = element.data();
-            let a = Almacenamiento.createFromJsonObject(usuarioJson);
-            almacenamiento.push(a);
+  /*  getAlmacenamiento(): Promise<Almacenamiento[]> {
+      let promise = new Promise<Almacenamiento[]>((resolve, reject) => {
+        const usuariosRef = this.angularFirestore.collection('Almacenamiento');
+        const snapshot = usuariosRef
+          .get()
+          .toPromise()
+          .then((data: any) => {
+            let almacenamiento = new Array<Almacenamiento>();
+            data.forEach((element) => {
+              let usuarioJson = element.data();
+              let a = Almacenamiento.createFromJsonObject(usuarioJson);
+              almacenamiento.push(a);
+            });
+            resolve(almacenamiento);
+          })
+          .catch((error: Error) => {
+            reject(error.message);
           });
-          resolve(almacenamiento);
-        })
-        .catch((error: Error) => {
-          reject(error.message);
-        });
-    });
-    return promise;
-  }
-*/
+      });
+      return promise;
+    }
+  */
   //======================================================================================
 
   //==============
   //| Getters By |
   //==============
 
-  getUsuarioByEmail(email:string): Promise<Usuario> {
+  getUsuarioByEmail(email: string): Promise<Usuario> {
     let promise = new Promise<Usuario>((resolve, reject) => {
       const usuariosRef = this.angularFirestore.collection('Usuarios').ref;
       usuariosRef
@@ -168,7 +169,7 @@ export class FireServiceProvider {
         .get()
         .then((data: any) => {
           let usuario = new Usuario();
-          data.forEach((element:any) => {
+          data.forEach((element: any) => {
             let usuarioJson = element.data();
             usuario = Usuario.createFromJsonObject(usuarioJson);
           });
@@ -181,7 +182,7 @@ export class FireServiceProvider {
     return promise;
   } //end get usuarios
 
-  getUsuarioById(id:any): Promise<Usuario> {
+  getUsuarioById(id: any): Promise<Usuario> {
     let promise = new Promise<Usuario>((resolve, reject) => {
       const usuariosRef = this.angularFirestore.collection('Usuarios').ref;
       usuariosRef
@@ -189,7 +190,7 @@ export class FireServiceProvider {
         .get()
         .then((data: any) => {
           let usuario = new Usuario();
-          data.forEach((element:any) => {
+          data.forEach((element: any) => {
             let usuarioJson = element.data();
             usuario = Usuario.createFromJsonObject(usuarioJson);
           });
@@ -215,7 +216,7 @@ export class FireServiceProvider {
   getParticipantesTR(): any {
     //Nombre coleccion por fecha de evento
     let fecha = new Date();
-    let nombre:string=`Participantes-${fecha.getDate()}.${fecha.getMonth()+1}.${fecha.getFullYear()}`
+    let nombre: string = `Participantes-${fecha.getDate()}.${fecha.getMonth() + 1}.${fecha.getFullYear()}`
 
     return this.angularFirestore.collection(nombre).snapshotChanges();
   }
@@ -223,9 +224,9 @@ export class FireServiceProvider {
   getJuegosEventoTR(): any {
     //Nombre coleccion por fecha de evento
     let fecha = new Date();
-    let nombre:string=`Juegos-${fecha.getDate()}.${fecha.getMonth()+1}.${fecha.getFullYear()}`
+    let nombre: string = `Juegos-${fecha.getDate()}.${fecha.getMonth() + 1}.${fecha.getFullYear()}`
 
-    this.angularFirestore.collection(nombre).snapshotChanges().subscribe((res)=>{
+    this.angularFirestore.collection(nombre).snapshotChanges().subscribe((res) => {
     })
 
     return this.angularFirestore.collection(nombre).snapshotChanges();
@@ -241,7 +242,7 @@ export class FireServiceProvider {
   //| Deletes |
   //===========
 
-  
+
   eliminarUsuario(usuario: Usuario, valor: boolean): Promise<Boolean> {
     let promise = new Promise<Boolean>((resolve, reject) => {
       this.angularFirestore.collection('Usuarios').doc(usuario.id).delete().then(
@@ -308,7 +309,7 @@ export class FireServiceProvider {
   eliminarParticipante(participante: Participante): Promise<Boolean> {
     //Nombre coleccion por fecha de evento
     let fecha = new Date();
-    let nombre:string=`Participantes-${fecha.getDate()}.${fecha.getMonth()+1}.${fecha.getFullYear()}`
+    let nombre: string = `Participantes-${fecha.getDate()}.${fecha.getMonth() + 1}.${fecha.getFullYear()}`
 
     let promise = new Promise<Boolean>((resolve, reject) => {
       this.angularFirestore
@@ -332,24 +333,24 @@ export class FireServiceProvider {
     return promise;
   } //end_eliminar_usuario
 
-/*
-  borrarEvento(evento): Promise<Boolean> {
-    let promise = new Promise<Boolean>((resolve, reject) => {
-      this.angularFirestore
-      .collection('Juegos-29.11.2022')
-      .get()
-      .toPromise()
-      .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        doc.ref.delete();
+  /*
+    borrarEvento(evento): Promise<Boolean> {
+      let promise = new Promise<Boolean>((resolve, reject) => {
+        this.angularFirestore
+        .collection('Juegos-29.11.2022')
+        .get()
+        .toPromise()
+        .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          doc.ref.delete();
+        });
       });
-    });
-    })
+      })
+        
+      return promise;
       
-    return promise;
-    
-  } //end_eliminar_usuario
-  */
+    } //end_eliminar_usuario
+    */
 
   //======================================================================================
 
@@ -393,14 +394,14 @@ export class FireServiceProvider {
     return promise;
   } //end_modificar_juego
 
-  
+
 
   modificarParticipante(
     nuevosDatosParticipante: Participante
   ): Promise<Participante> {
     //Nombre coleccion por fecha de evento
     let fecha = new Date();
-    let nombre:string=`Participantes-${fecha.getDate()}.${fecha.getMonth()+1}.${fecha.getFullYear()}`
+    let nombre: string = `Participantes-${fecha.getDate()}.${fecha.getMonth() + 1}.${fecha.getFullYear()}`
 
     let promise = new Promise<Participante>((resolve, reject) => {
       this.angularFirestore
@@ -426,13 +427,11 @@ export class FireServiceProvider {
   } //end_modificar_participante
 
 
-  /*
-  modificarJuegosEvento(
-    nuevosDatosJuego: JuegoEvento
-  ): Promise<JuegoEvento> {
+
+  modificarJuegosEvento(nuevosDatosJuego: JuegoEvento): Promise<JuegoEvento> {
     //Nombre coleccion por fecha de evento
     let fecha = new Date();
-    let nombre:string=`Juegos-${fecha.getDate()}.${fecha.getMonth()+1}.${fecha.getFullYear()}`
+    let nombre: string = `Juegos-${fecha.getDate()}.${fecha.getMonth() + 1}.${fecha.getFullYear()}`
 
     let promise = new Promise<JuegoEvento>((resolve, reject) => {
       this.angularFirestore
@@ -452,7 +451,7 @@ export class FireServiceProvider {
     return promise;
   } //end_modificar_juevoevento
 
-  */
+
   //======================================================================================
 
   //===========
@@ -460,7 +459,7 @@ export class FireServiceProvider {
   //===========
 
 
-  
+
   insertarUsuario(datosNuevoUsuario: Usuario): Promise<Usuario> {
     let promise = new Promise<Usuario>((resolve, reject) => {
       datosNuevoUsuario.id = this.angularFirestore
@@ -501,44 +500,44 @@ export class FireServiceProvider {
     });
     return promise;
   } //end_insertarjuego
-/*
-  insertarJuegosEventos(datosNuevoJuego: JuegoEvento,fecha:Date): Promise<JuegoEvento> {
-    //Nombre coleccion por fecha de evento
-    let nombre:string=`Juegos-${fecha.getDate()}.${fecha.getMonth()+1}.${fecha.getFullYear()}`
-
-    let promise = new Promise<JuegoEvento>((resolve, reject) => {
-
-      this.angularFirestore
-        .collection(nombre)
-        .doc(datosNuevoJuego.juego.gameId)
-        .set(JSON.parse(JSON.stringify(datosNuevoJuego)))
-        .then(() => {
-          resolve(datosNuevoJuego);
-          this.presentToast(
-            'Nuevo juego añadido: ' +
-            datosNuevoJuego.juego.nombre +
-            ' ' +
-            datosNuevoJuego.juego.editorial
-          );
-        })
-        .catch((error: Error) => {
-          reject(error.message);
-        });
-
-
-    });
-    return promise;
-  } //end_insertarjuego
-*/
-
   
+    insertarJuegosEventos(datosNuevoJuego: JuegoEvento,fecha:Date): Promise<JuegoEvento> {
+      //Nombre coleccion por fecha de evento
+      let nombre:string=`Juegos-${fecha.getDate()}.${fecha.getMonth()+1}.${fecha.getFullYear()}`
+  
+      let promise = new Promise<JuegoEvento>((resolve, reject) => {
+  
+        this.angularFirestore
+          .collection(nombre)
+          .doc(datosNuevoJuego.juego.gameId)
+          .set(JSON.parse(JSON.stringify(datosNuevoJuego)))
+          .then(() => {
+            resolve(datosNuevoJuego);
+            this.presentToast(
+              'Nuevo juego añadido: ' +
+              datosNuevoJuego.juego.nombre +
+              ' ' +
+              datosNuevoJuego.juego.editorial
+            );
+          })
+          .catch((error: Error) => {
+            reject(error.message);
+          });
+  
+  
+      });
+      return promise;
+    } //end_insertarjuego
+  
+
+
 
   insertarParticipante(
     datosNuevoParticipante: Participante
   ): Promise<Participante> {
     //Nombre coleccion por fecha de evento
     let fecha = new Date();
-    let nombre:string=`Participantes-${fecha.getDate()}.${fecha.getMonth()+1}.${fecha.getFullYear()}`
+    let nombre: string = `Participantes-${fecha.getDate()}.${fecha.getMonth() + 1}.${fecha.getFullYear()}`
 
     let promise = new Promise<Participante>((resolve, reject) => {
       datosNuevoParticipante.id = this.angularFirestore

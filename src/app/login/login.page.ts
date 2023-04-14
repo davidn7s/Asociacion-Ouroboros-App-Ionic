@@ -138,7 +138,7 @@ export class LoginPage implements OnInit {
 
 
   recordar(correo:any) {
-    this.presentToast('Le ha sido enviado correo electrónico para recuperar su contraseña,'+
+    this.presentToast('Se le ha enviado correo electrónico para recuperar su contraseña,'+
     '<strong> puede estar en la carpeta de spam</strong>')
     this.fireAuth.resetPassword(correo)
   }
