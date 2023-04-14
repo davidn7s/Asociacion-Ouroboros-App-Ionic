@@ -56,16 +56,21 @@ export class AnnadirJuegoPage implements OnInit {
     let array: string[] = this.nuevoId.split('-');
     let num: number = parseInt(array[1]) + 1;
 
-    if (this.juego.gameId == null)
+    if (this.juego.gameId == null) {
       if (num < 1000 && num > 100) {
-        this.juegoNuevo.gameId = 'BG-' + num;
-      }
-      else if (num > 100 && num > 10) {
         this.juegoNuevo.gameId = 'BG-0' + num;
       }
-      else {
+      else if (num < 100 && num >= 10) {
         this.juegoNuevo.gameId = 'BG-00' + num;
       }
+      else if (num < 10) {
+        this.juegoNuevo.gameId = 'BG-000' + num;
+      }
+      else {
+        this.juegoNuevo.gameId = 'BG-' + num;
+      }
+    }
+
 
 
     this.validations_form = this.formBuilder.group({
@@ -137,50 +142,16 @@ export class AnnadirJuegoPage implements OnInit {
           console.log(error);
         });
     } else {
-      //CONTROLAR CANTIDAD
-      if (this.juegoNuevo.cantidad == 1)
-        this.firebaseService
-          .insertarJuego(this.juegoNuevo)
-          .then(() => {
-            console.log('Juego insertado');
-            this.closeModal();
-          })
-          .catch((error: string) => {
-            console.log(error);
-          });
-      else {
+      this.firebaseService
+        .insertarJuego(this.juegoNuevo)
+        .then(() => {
+          console.log('Juego insertado');
+          this.closeModal();
+        })
+        .catch((error: string) => {
+          console.log(error);
+        });
 
-        for (let inx = 0; inx < this.juegoNuevo.cantidad; inx++) {
-          this.firebaseService
-            .insertarJuego(this.juegoNuevo)
-            .then(() => {
-              console.log('Juego insertado');
-
-            })
-            .catch((error: string) => {
-              console.log(error);
-            });
-
-            console.log(this.juegoNuevo.gameId)
-
-          let array: string[] = this.nuevoId.split('-');
-          let num: number = parseInt(array[1]) + (2+inx);
-          if (num < 1000 && num > 100) {
-            this.juegoNuevo.gameId = 'BG-0' + num;
-          }
-          else if (num < 100 && num >= 10) {
-            this.juegoNuevo.gameId = 'BG-00' + num;
-          }
-          else if (num < 10) {
-            this.juegoNuevo.gameId = 'BG-000' + num;
-          }
-          else {
-            this.juegoNuevo.gameId = 'BG-' + num;
-          }
-        }
-
-        this.closeModal();
-      }
     }
   } //end subirJuego
 
