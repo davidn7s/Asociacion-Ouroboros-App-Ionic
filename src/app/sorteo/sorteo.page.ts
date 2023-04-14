@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController, ModalController } from '@ionic/angular';
+import { AlertController, LoadingController, ModalController } from '@ionic/angular';
 import { Participante } from 'src/modelo/Participante';
 import { FireServiceProvider } from 'src/providers/api-service/fire-service';
 import { AnnadirPage } from '../annadir/annadir.page';
@@ -27,7 +27,8 @@ export class SorteoPage implements OnInit {
   constructor(
     public modalCtrl: ModalController,
     public fireService: FireServiceProvider,
-    public alertCtrl: AlertController
+    public alertCtrl: AlertController,
+    public loadingCtrl: LoadingController
   ) { }
 
   //======================================================================================================================================
@@ -55,35 +56,42 @@ export class SorteoPage implements OnInit {
   //==========
 
   getParticipantes() {
+    this.presentLoading().then(()=>{
+      this.fireService.getParticipantesTR().subscribe((resultadoConsulta: any) => {
 
-    this.fireService.getParticipantesTR().subscribe((resultadoConsulta: any) => {
-
-
-      this.contador = 0;
-      this.contadorTot = 0;
-
-      this.participantes = new Array<Participante>();
-      this.participantesSortear = new Array<string>();
-      
-      resultadoConsulta.forEach((datos: any) => {
-        let participante: Participante = Participante.createFromJsonObject(
-          datos.payload.doc.data()
-        );
-        this.participantes.push(participante);
-
-        for (let inx = 0; inx < participante.puntos; inx++)
-          this.participantesSortear.push(
-            participante.nombre + ' ' + participante.apellidos
+        if (resultadoConsulta.length == 0) {
+          this.loadingCtrl.dismiss()
+        }
+  
+  
+  
+        this.contador = 0;
+        this.contadorTot = 0;
+  
+        this.participantes = new Array<Participante>();
+        this.participantesSortear = new Array<string>();
+        
+        resultadoConsulta.forEach((datos: any) => {
+          let participante: Participante = Participante.createFromJsonObject(
+            datos.payload.doc.data()
           );
-
-        this.contadorTot += participante.puntos;
-        this.contador++;
-
-
-        //Ordenar participantes alfabéticamente
-        this.participantes.sort(this.ordenar);
+          this.participantes.push(participante);
+  
+          for (let inx = 0; inx < participante.puntos; inx++)
+            this.participantesSortear.push(
+              participante.nombre + ' ' + participante.apellidos
+            );
+  
+          this.contadorTot += participante.puntos;
+          this.contador++;
+  
+  
+          //Ordenar participantes alfabéticamente
+          this.participantes.sort(this.ordenar);
+        });
       });
-    });
+    })
+
   } //end getParticipantes a tiempo real
 
   borrarParticipante(participante: Participante) {
@@ -274,4 +282,12 @@ export class SorteoPage implements OnInit {
   buscar(ev: any) {
     this.textoBuscar = ev.detail.value;
   }//end buscar
+
+  async presentLoading() {
+    let loading = await this.loadingCtrl.create({
+      message: 'Cargando participantes...',
+      spinner: 'bubbles',
+    });
+    return loading.present();
+  }//end presentLoading
 }

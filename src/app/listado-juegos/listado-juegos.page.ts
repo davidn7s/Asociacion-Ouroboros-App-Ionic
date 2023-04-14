@@ -63,6 +63,12 @@ export class ListadoJuegosPage implements OnInit {
   getJuegos() {
     this.presentLoading().then(()=>{
       this.fireService.getJuegosTR().subscribe((resultadoConsulta:any) => {
+
+        if (resultadoConsulta.length == 0) {
+          this.loadingCtrl.dismiss()
+        }
+
+
         this.juegos = new Array<Juego>();
         resultadoConsulta.forEach((datos: any) => {
           let juego: Juego = Juego.createFromJsonObject(datos.payload.doc.data());
@@ -101,6 +107,7 @@ export class ListadoJuegosPage implements OnInit {
   async modificarJuego(juego: Juego) {
     if (juego.gameId == null){
       juego = new Juego();
+      juego.gameId=''
     } 
     let ultimo: Juego =this.juegos[this.juegos.length - 1];
 

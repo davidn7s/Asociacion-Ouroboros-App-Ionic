@@ -56,7 +56,7 @@ export class AnnadirJuegoPage implements OnInit {
     let array: string[] = this.nuevoId.split('-');
     let num: number = parseInt(array[1]) + 1;
 
-    if (this.juego.gameId == null) {
+    if (this.juego.gameId == null || this.juego.gameId=='') {
       if (num < 1000 && num > 100) {
         this.juegoNuevo.gameId = 'BG-0' + num;
       }
@@ -132,7 +132,7 @@ export class AnnadirJuegoPage implements OnInit {
   //==========
   subirJuego() {
     console.log(this.juego)
-    if (this.idOriginal != null) {
+    if (this.idOriginal != null && this.idOriginal!='') {
       this.firebaseService
         .modificarJuego(this.juegoNuevo)
         .then(() => {
