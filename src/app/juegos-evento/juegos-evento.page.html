@@ -1,0 +1,76 @@
+<ion-header>
+  <ion-toolbar>
+
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+
+    
+    <ion-title>{{evento}}</ion-title>
+  </ion-toolbar>
+  
+</ion-header>
+
+<!--Barra de búsqueda-->
+<ion-searchbar
+  placeholder="Buscar juego"
+  (ionChange)="buscar($event)"
+></ion-searchbar>
+
+  <!--Select de tipo-->
+  <ion-item>
+    <ion-label position="floating" color="danger">Estado</ion-label>
+    <ion-select
+      [(ngModel)]="estado"
+      (ionChange)="cambioTipo()"
+      interface="popover"
+      cancelText="Cancelar"
+      okText="Aceptar"
+    >
+      <ion-select-option value="todo">Todo</ion-select-option>
+      <ion-select-option value="para prestar">Para prestar</ion-select-option>
+      <ion-select-option value="prestado">Prestado</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+<ion-content>
+  <ion-list *ngFor="let juego of juegosMuestra | filtro: textoBuscar: 'nombre' : 'editorial' : true ">
+    <ion-card (click)="opciones(juego)">
+      <ion-row>
+        <ion-col size="9">{{juego.juego.gameId}} </ion-col>
+        
+        </ion-row>
+      <ion-card-content>
+        <ion-row>
+          <ion-col size="4">
+            <ion-img *ngIf="juego.juego.imagen!=''" src={{juego.juego.imagen}}></ion-img>
+      <ion-img *ngIf="juego.juego.imagen==''" src="..\..\assets\icon\404.png"></ion-img>
+          </ion-col>
+
+          <ion-col size="8">
+            <ion-row>
+              <h3><strong>{{juego.juego.nombre}}</strong></h3>
+            </ion-row>
+            <ion-row *ngIf="juego.juego.editorial!='-'">
+              <strong>Editorial: </strong> {{juego.juego.editorial}}
+            </ion-row>
+            <ion-row>
+              <strong>Edad Mínima: </strong> {{juego.juego.edadMinima}}
+            </ion-row>
+            <ion-row>
+              <strong>Jugadores: </strong> {{juego.juego.jugadores}}
+            </ion-row>
+            <ion-row *ngIf="juego.juego.tiempoJuegoMin!='-'">
+              <strong>Tiempo de juego: </strong> {{juego.juego.tiempoJuegoMin}} min
+            </ion-row>
+            <ion-row *ngIf="juego.estado!=undefined"> <strong>Estado: </strong><label>{{juego.estado}}</label></ion-row>
+            <ion-row *ngIf="juego.estado==undefined"> <strong>Estado:</strong><label>Para prestar</label>  </ion-row>
+            <ion-row *ngIf="juego.vecesPrestado!=undefined"> <strong>Veces prestado:</strong><label>{{juego.vecesPrestado}}</label></ion-row>
+            <ion-row *ngIf="juego.vecesPrestado==undefined"> <strong>Veces prestado:</strong><label>0</label></ion-row>
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+
+</ion-content>

@@ -47,6 +47,10 @@ const routes: Routes = [
     path: 'annadir-juego',
     loadChildren: () => import('./annadir-juego/annadir-juego.module').then( m => m.AnnadirJuegoPageModule)
   },
+  {
+    path: 'juegos-evento',
+    loadChildren: () => import('./juegos-evento/juegos-evento.module').then( m => m.JuegosEventoPageModule)
+  },
 ];
 
 @NgModule({
