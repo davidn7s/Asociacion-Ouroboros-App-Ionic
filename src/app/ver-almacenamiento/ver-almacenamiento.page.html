@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar>
+
+    <ion-buttons slot="start">
+      <ion-button ion-button (click)="closeModal()"
+        ><ion-icon name="arrow-back-outline"></ion-icon
+      ></ion-button>
+    </ion-buttons>
+
+    <ion-title>{{almacenamiento.ubicacion}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list *ngFor="let juego of almacenamiento.juegos">
+    <ion-card>
+      <ion-row>
+        {{juego.gameId}} 
+        </ion-row>
+      <ion-card-content>
+        <ion-row>
+          <ion-col size="4">
+            <ion-img *ngIf="juego.imagen!=''" src={{juego.imagen}}></ion-img>
+      <ion-img *ngIf="juego.imagen==''" src="..\..\assets\icon\404.png"></ion-img>
+          </ion-col>
+
+          <ion-col size="8">
+            <ion-row>
+              <h3><strong>{{juego.nombre}}</strong></h3>
+            </ion-row>
+            <ion-row *ngIf="juego.editorial!='-'">
+              <strong>Editorial: </strong> {{juego.editorial}}
+            </ion-row>
+            <ion-row>
+              <strong>Edad Mínima: </strong> {{juego.edadMinima}}
+            </ion-row>
+            <ion-row>
+              <strong>Jugadores: </strong> {{juego.jugadores}}
+            </ion-row>
+            <ion-row *ngIf="juego.tiempoJuegoMin!='-'">
+              <strong>Tiempo de juego: </strong> {{juego.tiempoJuegoMin}} min
+            </ion-row>
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+  
+
+</ion-content>

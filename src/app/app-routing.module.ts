@@ -51,6 +51,10 @@ const routes: Routes = [
     path: 'juegos-evento',
     loadChildren: () => import('./juegos-evento/juegos-evento.module').then( m => m.JuegosEventoPageModule)
   },
+  {
+    path: 'ver-almacenamiento',
+    loadChildren: () => import('./ver-almacenamiento/ver-almacenamiento.module').then( m => m.VerAlmacenamientoPageModule)
+  },
 ];
 
 @NgModule({
