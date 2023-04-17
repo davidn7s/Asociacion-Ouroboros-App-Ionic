@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { VerAlmacenamientoPageRoutingModule } from './ver-almacenamiento-routing.module';
 
 import { VerAlmacenamientoPage } from './ver-almacenamiento.page';
+import { PipesModule } from '../pipes/pipes.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    VerAlmacenamientoPageRoutingModule
+    VerAlmacenamientoPageRoutingModule,
+    PipesModule
   ],
   declarations: [VerAlmacenamientoPage]
 })

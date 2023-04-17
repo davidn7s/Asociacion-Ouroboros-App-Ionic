@@ -17,6 +17,8 @@ export class VerAlmacenamientoPage implements OnInit {
   @Input() almacenamientoJson:any;
 
   almacenamiento: Almacenamiento = new Almacenamiento();
+  textoBuscar: string = '';
+
 
   constructor(public modalCtrl: ModalController) { }
 
@@ -41,4 +43,9 @@ export class VerAlmacenamientoPage implements OnInit {
     this.modalCtrl.dismiss();
   }
 
+  
+  buscar(ev:any) {
+    this.textoBuscar = ev.detail.value;
+  } //end buscar
+  
 }

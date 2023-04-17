@@ -11,9 +11,18 @@
   </ion-toolbar>
 </ion-header>
 
+<!--Barra de búsqueda-->
+<ion-searchbar
+  debounce="100"
+  placeholder="Buscar juego"
+  (ionChange)="buscar($event)"
+></ion-searchbar>
+
+
+
 <ion-content>
 
-  <ion-list *ngFor="let juego of almacenamiento.juegos">
+  <ion-list *ngFor="let juego of almacenamiento.juegos  | filtro: textoBuscar: 'nombre' : 'editorial': true">
     <ion-card>
       <ion-row>
         {{juego.gameId}} 
