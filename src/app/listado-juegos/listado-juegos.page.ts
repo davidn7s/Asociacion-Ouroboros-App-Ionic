@@ -62,6 +62,12 @@ export class ListadoJuegosPage implements OnInit {
     this.getJuegos();
   }//end ngOnInit
 
+  ionViewWillLeave() {
+    NativeAudio.unload({
+      assetId: 'alerta',
+    });
+  } //end ionViewWillLeave
+
 
   //============================================================================================================
 

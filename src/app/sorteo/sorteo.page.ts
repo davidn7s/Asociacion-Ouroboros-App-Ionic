@@ -57,7 +57,13 @@ export class SorteoPage implements OnInit {
   ionViewWillEnter() {
     this.contadorTot = 0;
     this.contador = 0;
-  }
+  }//end ionViewWillEnter
+
+  ionViewWillLeave() {
+    NativeAudio.unload({
+      assetId: 'alerta',
+    });
+  } //end ionViewWillLeave
 
   //======================================================================================================================================
 

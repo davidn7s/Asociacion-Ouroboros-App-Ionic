@@ -61,6 +61,12 @@ export class UsuariosPage implements OnInit {
     this.getUsuarios();
   } //end ngOnInit
 
+  ionViewWillLeave() {
+    NativeAudio.unload({
+      assetId: 'alerta',
+    });
+  } //end ionViewWillLeave
+
   //======================================================================================================================================
 
   //==========

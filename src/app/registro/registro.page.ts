@@ -86,7 +86,7 @@ export class RegistroPage implements OnInit {
 
     //Carga del audio
     NativeAudio.preload({
-      assetId: "alerta",
+      assetId: "error",
       assetPath: "../../assets/audio/error.mp3",
       audioChannelNum: 1,
       isUrl: false
@@ -155,7 +155,11 @@ export class RegistroPage implements OnInit {
 
   ionViewWillLeave() {
     this.menu.enable(true);
+    NativeAudio.unload({
+      assetId: 'error',
+    });
   } //end ionViewWillLeave
+
 
 
 
@@ -276,7 +280,7 @@ export class RegistroPage implements OnInit {
       
 
     NativeAudio.getDuration({
-      assetId: 'alerta'
+      assetId: 'error'
     })
       .then(result => {
         duracion = result.duration;
@@ -285,7 +289,7 @@ export class RegistroPage implements OnInit {
 
     //Ejecuto el audio
     NativeAudio.play({
-      assetId: 'alerta',
+      assetId: 'error',
       time: duracion
     });
   }//end audio

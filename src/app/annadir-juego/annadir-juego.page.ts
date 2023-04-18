@@ -127,6 +127,13 @@ export class AnnadirJuegoPage implements OnInit {
     });
   }
 
+
+  ionViewWillLeave() {
+    NativeAudio.unload({
+      assetId: 'alerta',
+    });
+  } //end ionViewWillLeave
+
   onSubmit() {
 
 

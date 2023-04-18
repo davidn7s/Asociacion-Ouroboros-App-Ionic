@@ -46,13 +46,21 @@ export class LoginPage implements OnInit {
   ngOnInit() {
         //Carga del audio
         NativeAudio.preload({
-          assetId: "alerta",
+          assetId: "error",
           assetPath: "../../assets/audio/error.mp3",
           audioChannelNum: 1,
           isUrl: false
         });
 
   }
+
+  ionViewWillLeave() {
+    NativeAudio.unload({
+      assetId: 'error',
+    });
+  } //end ionViewWillLeave
+
+  
 
 
 
@@ -197,7 +205,7 @@ export class LoginPage implements OnInit {
         
   
       NativeAudio.getDuration({
-        assetId: 'alerta'
+        assetId: 'error'
       })
         .then(result => {
           duracion = result.duration;
@@ -206,7 +214,7 @@ export class LoginPage implements OnInit {
   
       //Ejecuto el audio
       NativeAudio.play({
-        assetId: 'alerta',
+        assetId: 'error',
         time: duracion
       });
     }//end audio
