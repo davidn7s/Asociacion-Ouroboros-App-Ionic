@@ -87,6 +87,7 @@ export class LoginPage implements OnInit {
         console.log(error)
         this.audio();
         this.presentToast("Error, el correo electronico o la contraseña son incorrectos")
+        this.loadingController.dismiss();
       })
     })
     

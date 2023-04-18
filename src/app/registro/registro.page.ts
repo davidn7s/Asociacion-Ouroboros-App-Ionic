@@ -62,8 +62,7 @@ export class RegistroPage implements OnInit {
         },
         {
           type: 'pattern',
-          message:
-            'Tu contraseña tiene que contener al menos una mayuscula, una minúscula y un número.',
+          message:'Tu contraseña tiene que contener al menos una mayuscula, una minúscula y un número.',
         },
       ],
       confirmPassword: [
@@ -167,15 +166,15 @@ export class RegistroPage implements OnInit {
   //==========
 
   insertar(usuario: Usuario, contrasenna: string) {
-    this.pantallaCarga();
-    this.fireAuth
+    this.pantallaCarga().then(()=>{
+      this.fireAuth
       .loginUser(usuario.email, contrasenna)
       .then((usuario: Usuario) => {
         this.audio();
         this.presentToast(
-          'Error, email ya registrado, no se ha podido registrarse el usuario'
+          'Error, email ya registrado, no se ha podido registrar el usuario'
         );
-        this.cerrarCarga();
+       this.loadingCtrl.dismiss();
       })
       .catch((error: string) => {
         this.firebaseService
@@ -184,18 +183,24 @@ export class RegistroPage implements OnInit {
             this.fireAuth
               .registerUser(usuario.email, contrasenna)
               .then((data) => {
-                this.cerrarCarga();
+                this.loadingCtrl.dismiss();
                 this.presentToast('Registro completado');
                 this.router.navigate(['usuarios'])
               })
               .catch((error) => {
-                this.cerrarCarga();
+                this.loadingCtrl.dismiss();
                 console.log(error)
                 this.firebaseService.eliminarUsuario(usuario, false);
+                this.audio();
+                this.presentToast(
+                  'Error, email ya registrado, no se ha podido registrar el usuario'
+                );
               });
           })
           .catch((error: string) => { });
       });
+    });
+    
   }//end insertar
 
 
@@ -255,17 +260,14 @@ export class RegistroPage implements OnInit {
 
   async pantallaCarga() {
     const loading = await this.loadingCtrl.create({
-      message: 'Registrando usuario ...',
-      duration: 20000,
+      message: 'Realizando login ...',
       spinner: 'bubbles',
       translucent: true,
     });
-    await loading.present();
+    return loading.present();
   }//end pantallaCarga
 
-  async cerrarCarga() {
-    return await this.loadingCtrl.dismiss();
-  }//end cerrarCarga
+
 
   audio() {
 
