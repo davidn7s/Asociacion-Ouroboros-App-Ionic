@@ -48,18 +48,22 @@ export class UsuariosPage implements OnInit {
   //=============
 
   ngOnInit() {
-     //Carga del audio
-     NativeAudio.preload({
-      assetId: "alerta",
-      assetPath: "../../assets/audio/alert.wav",
-      audioChannelNum: 1,
-      isUrl: false
-    });
+
 
 
     this.globalUsu=this.globalVariable.usuGlobal
     this.getUsuarios();
   } //end ngOnInit
+
+  ionViewWillEnter(){
+         //Carga del audio
+         NativeAudio.preload({
+          assetId: "alerta",
+          assetPath: "../../assets/audio/alert.wav",
+          audioChannelNum: 1,
+          isUrl: false
+        });
+  }
 
   ionViewWillLeave() {
     NativeAudio.unload({
