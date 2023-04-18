@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NativeAudio } from '@capacitor-community/native-audio';
 import { LoadingController, MenuController, ToastController } from '@ionic/angular';
 import { Usuario } from 'src/modelo/Usuario';
 import { FireServiceProvider } from 'src/providers/api-service/fire-service';
@@ -22,7 +23,7 @@ export class RegistroPage implements OnInit {
   validations_form!: FormGroup;
   matching_passwords_group!: FormGroup;
 
-  validation_messages:any;
+  validation_messages: any;
 
   usuario: Usuario = new Usuario();
   contrasenna: string = '';
@@ -49,7 +50,7 @@ export class RegistroPage implements OnInit {
         { type: 'required', message: 'El correo electronico es obligatorio.' },
         { type: 'pattern', message: 'Introduzca un correo electrónico válido.' },
       ],
-  
+
       cargo: [
         { type: 'required', message: 'El cargo es obligatorio.' }
       ],
@@ -73,7 +74,7 @@ export class RegistroPage implements OnInit {
       ],
     };
 
-   }
+  }
 
 
   //======================================================================================================================================
@@ -83,6 +84,15 @@ export class RegistroPage implements OnInit {
   //=============
 
   ngOnInit() {
+
+    //Carga del audio
+    NativeAudio.preload({
+      assetId: "alerta",
+      assetPath: "../../assets/audio/error.mp3",
+      audioChannelNum: 1,
+      isUrl: false
+    });
+
     this.matching_passwords_group = new FormGroup(
       {
         password: new FormControl(
@@ -156,11 +166,12 @@ export class RegistroPage implements OnInit {
   //|Firebase|
   //==========
 
-  insertar(usuario:Usuario, contrasenna: string) {
+  insertar(usuario: Usuario, contrasenna: string) {
     this.pantallaCarga();
     this.fireAuth
       .loginUser(usuario.email, contrasenna)
       .then((usuario: Usuario) => {
+        this.audio();
         this.presentToast(
           'Error, email ya registrado, no se ha podido registrarse el usuario'
         );
@@ -183,7 +194,7 @@ export class RegistroPage implements OnInit {
                 this.firebaseService.eliminarUsuario(usuario, false);
               });
           })
-          .catch((error: string) => {});
+          .catch((error: string) => { });
       });
   }//end insertar
 
@@ -211,7 +222,7 @@ export class RegistroPage implements OnInit {
   //|Otros métodos|
   //===============
 
-  onSubmit(values:any) {
+  onSubmit(values: any) {
     let usuario = new Usuario();
     usuario.nombre = values.nombre;
     usuario.apellidos = values.apellidos;
@@ -255,5 +266,26 @@ export class RegistroPage implements OnInit {
   async cerrarCarga() {
     return await this.loadingCtrl.dismiss();
   }//end cerrarCarga
+
+  audio() {
+
+    //Cojo la duración del audio
+    let duracion!: number;
+      
+
+    NativeAudio.getDuration({
+      assetId: 'alerta'
+    })
+      .then(result => {
+        duracion = result.duration;
+      })
+
+
+    //Ejecuto el audio
+    NativeAudio.play({
+      assetId: 'alerta',
+      time: duracion
+    });
+  }//end audio
 
 }//end class

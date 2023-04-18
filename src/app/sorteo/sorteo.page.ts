@@ -4,6 +4,7 @@ import { Participante } from 'src/modelo/Participante';
 import { FireServiceProvider } from 'src/providers/api-service/fire-service';
 import { AnnadirPage } from '../annadir/annadir.page';
 import { SortearPage } from '../sortear/sortear.page';
+import { NativeAudio } from '@capacitor-community/native-audio';
 
 @Component({
   selector: 'app-sorteo',
@@ -38,6 +39,15 @@ export class SorteoPage implements OnInit {
   //=============
 
   ngOnInit() {
+       //Carga del audio
+       NativeAudio.preload({
+        assetId: "alerta",
+        assetPath: "../../assets/audio/alert.wav",
+        audioChannelNum: 1,
+        isUrl: false
+      });
+
+      
     let fecha = new Date();
     this.fechaActual = fecha.toLocaleDateString();
 
@@ -88,7 +98,11 @@ export class SorteoPage implements OnInit {
   
           //Ordenar participantes alfabéticamente
           this.participantes.sort(this.ordenar);
+
+          
         });
+
+        this.loadingCtrl.dismiss()
       });
     })
 
@@ -162,6 +176,7 @@ export class SorteoPage implements OnInit {
   } //end opciones
 
   confirmar(participante: Participante) {
+    this.audio();
     this.alertCtrl
       .create({
         cssClass: 'app-alert',
@@ -290,4 +305,25 @@ export class SorteoPage implements OnInit {
     });
     return loading.present();
   }//end presentLoading
+
+    audio() {
+
+    //Cojo la duración del audio
+    let duracion!: number;
+      
+
+    NativeAudio.getDuration({
+      assetId: 'alerta'
+    })
+      .then(result => {
+        duracion = result.duration;
+      })
+
+
+    //Ejecuto el audio
+    NativeAudio.play({
+      assetId: 'alerta',
+      time: duracion
+    });
+  }//end audio
 }

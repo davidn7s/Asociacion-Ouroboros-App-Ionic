@@ -5,6 +5,7 @@ import { Usuario } from 'src/modelo/Usuario';
 import { FireServiceProvider } from 'src/providers/api-service/fire-service';
 import { FirebaseAuthService } from 'src/providers/api-service/firebase-auth-service';
 import { GlobalMethodsService } from '../global-methods.service'; 
+import { NativeAudio } from '@capacitor-community/native-audio';
 
 @Component({
   selector: 'app-login',
@@ -43,6 +44,14 @@ export class LoginPage implements OnInit {
   //=============
 
   ngOnInit() {
+        //Carga del audio
+        NativeAudio.preload({
+          assetId: "alerta",
+          assetPath: "../../assets/audio/error.mp3",
+          audioChannelNum: 1,
+          isUrl: false
+        });
+
   }
 
 
@@ -69,12 +78,14 @@ export class LoginPage implements OnInit {
           })
           .catch((error:any) => {
             this.loadingController.dismiss()
+            this.audio();
             this.presentToast('Ha ocurrido un error inesperado');
           });
 
 
       }).catch((error: string) => {
         console.log(error)
+        this.audio();
         this.presentToast("Error, el correo electronico o la contraseña son incorrectos")
       })
     })
@@ -177,6 +188,27 @@ export class LoginPage implements OnInit {
         res.present();
       });
     }
+
+    audio() {
+
+      //Cojo la duración del audio
+      let duracion!: number;
+        
+  
+      NativeAudio.getDuration({
+        assetId: 'alerta'
+      })
+        .then(result => {
+          duracion = result.duration;
+        })
+  
+  
+      //Ejecuto el audio
+      NativeAudio.play({
+        assetId: 'alerta',
+        time: duracion
+      });
+    }//end audio
 
 
 }

@@ -1,8 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ModalController, NavParams, ToastController } from '@ionic/angular';
+import { AlertController, ModalController, NavParams, ToastController } from '@ionic/angular';
 import { Juego } from 'src/modelo/Juego';
 import { FireServiceProvider } from 'src/providers/api-service/fire-service';
+import { NativeAudio } from '@capacitor-community/native-audio'
 
 @Component({
   selector: 'app-annadir-juego',
@@ -34,8 +35,15 @@ export class AnnadirJuegoPage implements OnInit {
   imageFileName!: string;
   lastFileName!: string;
 
+  idControl = true;
+  lockIcon:string='lock-closed';
 
-  constructor(public modalCtrl: ModalController, public formBuilder: FormBuilder, public firebaseService: FireServiceProvider, private toastController: ToastController) {
+
+  constructor(private modalCtrl: ModalController,
+    private formBuilder: FormBuilder,
+    private firebaseService: FireServiceProvider,
+    private toastController: ToastController,
+    private alertCtrl: AlertController) {
   }
 
 
@@ -45,6 +53,15 @@ export class AnnadirJuegoPage implements OnInit {
   //|Fases Ionic|
   //=============
   ngOnInit() {
+    //Carga del audio
+    NativeAudio.preload({
+      assetId: "alerta",
+      assetPath: "../../assets/audio/alert.wav",
+      audioChannelNum: 1,
+      isUrl: false
+    });
+
+
     this.juego = Juego.createFromJsonObject(JSON.parse(this.juegoJson));
     this.lastFileName = this.juego.imagen;
     this.idOriginal = this.juego.gameId;
@@ -55,7 +72,7 @@ export class AnnadirJuegoPage implements OnInit {
     let array: string[] = this.nuevoId.split('-');
     let num: number = parseInt(array[1]) + 1;
 
-    if (this.juego.gameId == null || this.juego.gameId=='') {
+    if (this.juego.gameId == null || this.juego.gameId == '') {
       if (num < 1000 && num > 100) {
         this.juegoNuevo.gameId = 'BG-0' + num;
       }
@@ -71,8 +88,14 @@ export class AnnadirJuegoPage implements OnInit {
     }
 
 
-
+//([B][G][-][0-9]?)
     this.validations_form = this.formBuilder.group({
+      id: new FormControl(
+        this.juegoNuevo.gameId,
+        Validators.compose([
+          Validators.required,
+        ])
+      ),
       nombre: new FormControl(
         this.juegoNuevo.nombre,
         Validators.compose([
@@ -112,6 +135,7 @@ export class AnnadirJuegoPage implements OnInit {
 
     let values = this.validations_form.value;
 
+    this.juegoNuevo.gameId = values.id;
     this.juegoNuevo.nombre = values.nombre;
     this.juegoNuevo.editorial = values.editorial;
     this.juegoNuevo.edadMinima = values.edadMin;
@@ -130,7 +154,7 @@ export class AnnadirJuegoPage implements OnInit {
   //|Firebase|
   //==========
   subirJuego() {
-    if (this.idOriginal != null && this.idOriginal!='') {
+    if (this.idOriginal != null && this.idOriginal != '') {
       this.firebaseService
         .modificarJuego(this.juegoNuevo)
         .then(() => {
@@ -191,7 +215,7 @@ export class AnnadirJuegoPage implements OnInit {
   //|Ventanas modales|
   //==================
 
-  public closeModal() {
+  closeModal() {
     if (this.idOriginal == null && this.juegoNuevo.nombre === '')
       this.firebaseService
         .removeFile(this.lastFileName)
@@ -217,5 +241,70 @@ export class AnnadirJuegoPage implements OnInit {
     });
     toast.present();
   } //end Toast
+
+
+  aceptarEdicion() {
+    if (this.idControl) {
+      this.audio();
+      this.alertCtrl
+        .create({
+          cssClass: 'app-alert',
+          header: 'Advertencia',
+          subHeader:'¿Estás seguro de querer modificar el ID?, recuerda que si el ID existe, no funcionará la insercción.',
+          buttons: [
+            {
+              text: 'Aceptar',
+              handler: () => {
+                this.lockIcon='lock-open';
+                this.idControl = false;
+              },
+            },
+
+            {
+              text: 'Cancelar',
+              handler: () => {
+
+              }
+            },
+
+          ],
+        })
+        .then((res) => {
+          res.present();
+        });
+    }
+
+  }
+
+  cambioIcono(){
+    if(!this.idControl){
+      this.idControl=true;
+      this.lockIcon='lock-closed';
+    }else{
+      this.aceptarEdicion();
+    }
+  }
+
+
+  audio() {
+
+    //Cojo la duración del audio
+    let duracion!: number;
+
+    NativeAudio.getDuration({
+      assetId: 'alerta'
+    })
+      .then(result => {
+        duracion = result.duration;
+      })
+
+
+    //Ejecuto el audio
+    NativeAudio.play({
+      assetId: 'alerta',
+      time: duracion
+    });
+  }//end audio
+
 
 }

@@ -14,6 +14,12 @@
   <form [formGroup]="validations_form" (ngSubmit)="onSubmit()">
 
     <ion-item>
+      <ion-label position="stacked" color="withe">ID</ion-label>
+      <input type="text" placeholder="ID" formControlName="id" [readonly]="idControl" (click)="aceptarEdicion()"/>
+      <ion-icon id="candado" slot="end" [name]="lockIcon" (click)="cambioIcono()"></ion-icon>
+    </ion-item>
+
+    <ion-item>
       <ion-label position="stacked" color="withe">Nombre</ion-label>
       <input type="text" placeholder="Nombre" formControlName="nombre" />
     </ion-item>
@@ -48,9 +54,11 @@
     </ion-item>
 
     <ion-input type="text" formControlName="imagen" hidden></ion-input>
-    <ion-button color="rojo" id="rojo2" shape="round" size="medium">
+
+    <ion-button color="rojo" id="rojo2" shape="round" size="medium" expand="">
       <input type="file" (change)="imageOnChange($event)" />
     </ion-button>
+
     <ion-button id="rojo" color="rojo" class="submit-btn" expand="block" type="submit" [disabled]="validations_form.invalid">Listo</ion-button> 
   </form>
 

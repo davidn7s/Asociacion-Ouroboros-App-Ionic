@@ -10,6 +10,7 @@ import { Usuario } from 'src/modelo/Usuario';
 import { FireServiceProvider } from 'src/providers/api-service/fire-service';
 import { GlobalMethodsService } from '../global-methods.service';
 import { ModificarUsuarioPage } from '../modificar-usuario/modificar-usuario.page';
+import { NativeAudio } from '@capacitor-community/native-audio'
 
 @Component({
   selector: 'app-usuarios',
@@ -47,6 +48,15 @@ export class UsuariosPage implements OnInit {
   //=============
 
   ngOnInit() {
+     //Carga del audio
+     NativeAudio.preload({
+      assetId: "alerta",
+      assetPath: "../../assets/audio/alert.wav",
+      audioChannelNum: 1,
+      isUrl: false
+    });
+
+
     this.globalUsu=this.globalVariable.usuGlobal
     this.getUsuarios();
   } //end ngOnInit
@@ -75,6 +85,7 @@ export class UsuariosPage implements OnInit {
           this.usuariosMuestra.sort(this.ordenar);
   
           this.cambioTipo()
+          this.loadingCtrl.dismiss()
         });
       });
     })
@@ -149,6 +160,7 @@ export class UsuariosPage implements OnInit {
   } //end opciones
 
   confirmar(usuario: Usuario) {
+    this.audio();
     this.alertCtrl
       .create({
         cssClass:'app-alert',
@@ -264,5 +276,26 @@ export class UsuariosPage implements OnInit {
   registrarUsu(){
     this.router.navigate(['/registro'])
   }
+
+  
+  audio() {
+
+    //Cojo la duración del audio
+    let duracion!: number;
+
+    NativeAudio.getDuration({
+      assetId: 'alerta'
+    })
+      .then(result => {
+        duracion = result.duration;
+      })
+
+
+    //Ejecuto el audio
+    NativeAudio.play({
+      assetId: 'alerta',
+      time: duracion
+    });
+  }//end audio
 
 } //end class

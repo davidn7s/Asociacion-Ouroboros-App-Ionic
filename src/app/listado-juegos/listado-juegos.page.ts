@@ -10,6 +10,7 @@ import { FireServiceProvider } from 'src/providers/api-service/fire-service';
 import { AnnadirJuegoPage } from '../annadir-juego/annadir-juego.page';
 import { AppComponent } from '../app.component';
 import { GlobalMethodsService } from '../global-methods.service';
+import { NativeAudio } from '@capacitor-community/native-audio';
 
 @Component({
   selector: 'app-listado-juegos',
@@ -50,6 +51,14 @@ export class ListadoJuegosPage implements OnInit {
   }
 
   ngOnInit() {
+      //Carga del audio
+      NativeAudio.preload({
+        assetId: "alerta",
+        assetPath: "../../assets/audio/alert.wav",
+        audioChannelNum: 1,
+        isUrl: false
+      });
+
     this.getJuegos();
   }//end ngOnInit
 
@@ -136,6 +145,7 @@ export class ListadoJuegosPage implements OnInit {
   //|Otros Métodos|
   //===============
   confirmar(juego: Juego) {
+    this.audio();
     this.alertCtrl
       .create({
         cssClass: 'app-alert',
@@ -172,5 +182,26 @@ export class ListadoJuegosPage implements OnInit {
     });
     return loading.present();
   }//end presentLoading
+
+  audio() {
+
+    //Cojo la duración del audio
+    let duracion!: number;
+      
+
+    NativeAudio.getDuration({
+      assetId: 'alerta'
+    })
+      .then(result => {
+        duracion = result.duration;
+      })
+
+
+    //Ejecuto el audio
+    NativeAudio.play({
+      assetId: 'alerta',
+      time: duracion
+    });
+  }//end audio
 
 }
