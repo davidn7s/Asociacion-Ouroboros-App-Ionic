@@ -29,7 +29,9 @@ export class ListadoAlmacenamientoPage implements OnInit {
 
   almacenamientoArray: Array<Almacenamiento> = new Array();
   juegosEvento: Array<JuegoEvento> = new Array();
+  juegosEventoId:Array<JuegoEvento> = new Array();
   private globalUsu: Usuario = new Usuario();
+  deshabilitados:any=[];
 
   constructor(
     public fireService: FireServiceProvider,
@@ -107,7 +109,9 @@ export class ListadoAlmacenamientoPage implements OnInit {
       });
   } //end borrarAlmacenamiento
 
-  annadirJuego(almacenamiento: Almacenamiento) {
+  annadirJuego(almacenamiento: Almacenamiento, evento:any) {
+    evento.target.disabled=true
+    this.deshabilitados.push(evento.target)
     let juego = new Juego();
     juego.nombre = '--' + almacenamiento.ubicacion + '--';
     let juegoEvento: JuegoEvento = new JuegoEvento();
@@ -118,11 +122,8 @@ export class ListadoAlmacenamientoPage implements OnInit {
     this.juegosEvento.push(juegoEvento);
 
     almacenamiento.juegos.forEach((juego) => {
-      console.log(juego)
-
       this.fireService.getJueboById(juego)
         .then((data: Juego) => {
-          console.log(data)
           let juegoEvento: JuegoEvento = new JuegoEvento();
 
           juegoEvento.juego = data;
@@ -294,13 +295,27 @@ export class ListadoAlmacenamientoPage implements OnInit {
 
 
 
+  //AÑADIR CANTIDAD DEL JUEGO
   aceptar() {
     this.juegosEvento.forEach((data, index) => {
       this.almacenamientoArray.forEach((data2, index2) => {
-        if (data.juego.nombre == '--' + data2.ubicacion + '--')
+        if (data.juego.nombre == '--' + data2.ubicacion + '--'){
           this.juegosEvento.splice(index, 1);
+        }
+          
       });
     });
+
+    this.juegosEvento.forEach((data:JuegoEvento)=>{
+      let idOriginal=data.juego.gameId
+      for(let inx=0; inx<data.juego.cantidad;inx++){
+        let juegoNuevo=data
+        juegoNuevo.juego.gameId=idOriginal+"."+inx;
+        this.juegosEventoId.push(juegoNuevo);
+      }
+    })
+
+    this.juegosEvento.concat(this.juegosEventoId);
 
 
     this.annadirFecha(this.juegosEvento)
@@ -397,6 +412,9 @@ export class ListadoAlmacenamientoPage implements OnInit {
 
   borrarTodo() {
     this.juegosEvento = new Array();
+    for(let inx=0; inx<this.deshabilitados.length;inx++){
+      this.deshabilitados[inx].disabled=false;
+    }
   }
 
   audio() {

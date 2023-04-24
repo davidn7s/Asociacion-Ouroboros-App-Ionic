@@ -48,7 +48,7 @@
           <ion-item>
             <ion-row>
               <label (click)="opciones(a)">{{a.ubicacion}}</label>
-              <ion-button fill="clear" (click)="annadirJuego(a)">
+              <ion-button fill="clear" (click)="annadirJuego(a, $event)">
                 <ion-icon name="add-circle"></ion-icon>
               </ion-button>
             </ion-row>

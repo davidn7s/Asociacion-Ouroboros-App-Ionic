@@ -142,8 +142,8 @@ export class FireServiceProvider {
           .then((data: any) => {
             let almacenamiento = new Array<Almacenamiento>();
             data.forEach((element:any) => {
-              let usuarioJson = element.data();
-              let a = Almacenamiento.createFromJsonObject(usuarioJson);
+              let almacenamientoJson = element.data();
+              let a = Almacenamiento.createFromJsonObject(almacenamientoJson);
               almacenamiento.push(a);
             });
             resolve(almacenamiento);
