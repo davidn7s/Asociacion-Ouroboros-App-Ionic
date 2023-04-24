@@ -12,7 +12,7 @@ import { FireServiceProvider } from 'src/providers/api-service/fire-service';
 import { AppComponent } from '../app.component';
 import { GlobalMethodsService } from '../global-methods.service';
 import { VerAlmacenamientoPage } from '../ver-almacenamiento/ver-almacenamiento.page';
-import { error } from 'console';
+import { NativeAudio } from '@capacitor-community/native-audio';
 
 @Component({
   selector: 'app-listado-almacenamiento',
@@ -47,7 +47,16 @@ export class ListadoAlmacenamientoPage implements OnInit {
   //|Fases Ionic|
   //=============
 
-  ngOnInit() { }
+  ngOnInit() {
+    //Carga del audio
+    NativeAudio.preload({
+      assetId: "alerta",
+      assetPath: "../../assets/audio/alert.wav",
+      audioChannelNum: 1,
+      isUrl: false
+    });
+
+  }
 
   ionViewDidEnter() {
     this.getAlmacenamiento();
@@ -58,6 +67,12 @@ export class ListadoAlmacenamientoPage implements OnInit {
     this.globalUsu = this.globalVar.usuGlobal;
   }
 
+  ionViewWillLeave() {
+    NativeAudio.unload({
+      assetId: 'alerta',
+    });
+  } //end ionViewWillLeave
+
   //============================================================================================================
 
   //==========
@@ -65,9 +80,9 @@ export class ListadoAlmacenamientoPage implements OnInit {
   //==========
 
   getAlmacenamiento() {
-    this.presentLoading().then(()=>{
+    this.presentLoading().then(() => {
       this.almacenamientoArray = new Array();
-      this.fireService.getAlmacenamiento().then((data:any) => {
+      this.fireService.getAlmacenamiento().then((data: any) => {
         this.almacenamientoArray = data;
         //Ordenar almacenamientos por id
         this.almacenamientoArray.sort((a, b) =>
@@ -77,7 +92,7 @@ export class ListadoAlmacenamientoPage implements OnInit {
         this.loadingCtrl.dismiss()
       });
     });
-   
+
   } //end getAlmacenamiento
 
 
@@ -96,29 +111,29 @@ export class ListadoAlmacenamientoPage implements OnInit {
     let juego = new Juego();
     juego.nombre = '--' + almacenamiento.ubicacion + '--';
     let juegoEvento: JuegoEvento = new JuegoEvento();
-    juegoEvento.juego=juego;
-    juegoEvento.id=juego.gameId;
+    juegoEvento.juego = juego;
+    juegoEvento.id = juego.gameId;
     juegoEvento.estado = 'para prestar';
     juegoEvento.vecesPrestado = 0;
     this.juegosEvento.push(juegoEvento);
 
     almacenamiento.juegos.forEach((juego) => {
       console.log(juego)
-      
+
       this.fireService.getJueboById(juego)
-      .then((data:Juego)=>{
-        console.log(data)
-        let juegoEvento: JuegoEvento = new JuegoEvento();
-      
-        juegoEvento.juego=data;
-        juegoEvento.id=data.gameId;
-        juegoEvento.estado = 'para prestar';
-        juegoEvento.vecesPrestado = 0;
-        this.juegosEvento.push(juegoEvento);
-      }).catch((error:string)=>{
-        console.log(error)
-      })
-     
+        .then((data: Juego) => {
+          console.log(data)
+          let juegoEvento: JuegoEvento = new JuegoEvento();
+
+          juegoEvento.juego = data;
+          juegoEvento.id = data.gameId;
+          juegoEvento.estado = 'para prestar';
+          juegoEvento.vecesPrestado = 0;
+          this.juegosEvento.push(juegoEvento);
+        }).catch((error: string) => {
+          console.log(error)
+        })
+
     });
   } //end annadirJuego
 
@@ -226,6 +241,7 @@ export class ListadoAlmacenamientoPage implements OnInit {
   } //end opciones 
 
   confirmar(almacenamiento: Almacenamiento) {
+    this.audio();
     this.alertCtrl
       .create({
         cssClass: 'app-alert',
@@ -251,6 +267,7 @@ export class ListadoAlmacenamientoPage implements OnInit {
   } //end confirmar
 
   confirmarJuego(juego: Juego) {
+    this.audio();
     this.alertCtrl
       .create({
         cssClass: 'app-alert',
@@ -291,85 +308,85 @@ export class ListadoAlmacenamientoPage implements OnInit {
     this.juegosEvento = new Array();
   } //end aceptar
 
-  annadirFecha(juegos:any){
+  annadirFecha(juegos: any) {
     this.alertCtrl
-    .create({
-      cssClass: 'app-alert',
-      header:
-       '¿Qué día será el evento?',
-      inputs: [
-        {
-          name: 'dia',
-          value: new Date(),
-          type: 'date',
-        }
-      ],
-      buttons: [
+      .create({
+        cssClass: 'app-alert',
+        header:
+          '¿Qué día será el evento?',
+        inputs: [
+          {
+            name: 'dia',
+            value: new Date(),
+            type: 'date',
+          }
+        ],
+        buttons: [
 
-        {
-          text: 'Cancelar',
-          handler: () => {
-            console.log('Cancelar');
+          {
+            text: 'Cancelar',
+            handler: () => {
+              console.log('Cancelar');
+            },
           },
-        },
-        {
-          text: 'Añadir',
-          handler: (data: any) => {
-            let fecha:Date= new Date()
-            fecha=data['dia']
-            fecha=new Date(fecha)
-            juegos.forEach((data:any) => {
-              this.fireService.insertarJuegosEventos(data,fecha);
-            });
+          {
+            text: 'Añadir',
+            handler: (data: any) => {
+              let fecha: Date = new Date()
+              fecha = data['dia']
+              fecha = new Date(fecha)
+              juegos.forEach((data: any) => {
+                this.fireService.insertarJuegosEventos(data, fecha);
+              });
 
 
-          },
-        }
-      ],
-    })
-    .then((res) => {
-      res.present();
-    });
+            },
+          }
+        ],
+      })
+      .then((res) => {
+        res.present();
+      });
   }
 
 
   //CONTROLAR EVENTOS
-  eventoNombre(fecha:any){
+  eventoNombre(fecha: any) {
     this.alertCtrl
-    .create({
-      cssClass: 'app-alert',
-      header:
-       '¿Cuál es el evento?',
-      inputs: [
-        {
-          name: 'nombre',
-          type: 'text',
-          placeholder: 'Nombre del evento',
-          
-        }
-      ],
-      buttons: [
+      .create({
+        cssClass: 'app-alert',
+        header:
+          '¿Cuál es el evento?',
+        inputs: [
+          {
+            name: 'nombre',
+            type: 'text',
+            placeholder: 'Nombre del evento',
 
-        {
-          text: 'Cancelar',
-          handler: () => {
-            console.log('Cancelar');
+          }
+        ],
+        buttons: [
+
+          {
+            text: 'Cancelar',
+            handler: () => {
+              console.log('Cancelar');
+            },
           },
-        },
-        {
-          text: 'Añadir',
-          handler: (data: any) => {
-            
-            //CONTROLAR QUE YA EXISTA EL EVENTO Y NO REPETIR FECHAS
-    
-           
-          },
-        }
-      ],
-    })
-    .then((res) => {
-      res.present();
-    });
+          {
+            text: 'Añadir',
+            handler: (data: any) => {
+
+              //CONTROLAR QUE YA EXISTA EL EVENTO Y NO REPETIR FECHAS
+
+
+            },
+          }
+        ],
+      })
+      .then((res) => {
+        res.present();
+      });
   }
 
   deshabilitar() {
@@ -378,7 +395,28 @@ export class ListadoAlmacenamientoPage implements OnInit {
   } //end deshabilitar
 
 
-  borrarTodo(){
-    this.juegosEvento= new Array();
+  borrarTodo() {
+    this.juegosEvento = new Array();
   }
+
+  audio() {
+
+    //Cojo la duración del audio
+    let duracion!: number;
+
+
+    NativeAudio.getDuration({
+      assetId: 'alerta'
+    })
+      .then(result => {
+        duracion = result.duration;
+      })
+
+
+    //Ejecuto el audio
+    NativeAudio.play({
+      assetId: 'alerta',
+      time: duracion
+    });
+  }//end audio
 } //end class
