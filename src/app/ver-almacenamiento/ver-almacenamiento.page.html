@@ -22,7 +22,7 @@
 
 <ion-content>
 
-  <ion-list *ngFor="let juego of almacenamiento.juegos  | filtro: textoBuscar: 'nombre' : 'editorial': false">
+  <ion-list *ngFor="let juego of juegos  | filtro: textoBuscar: 'nombre' : 'editorial': false">
     <ion-card>
       <ion-row>
         {{juego.gameId}} 

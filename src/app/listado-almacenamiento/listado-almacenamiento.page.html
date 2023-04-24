@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+
+    <!-- Boton de submit-->
+    <ion-buttons slot="end">
+      <ion-button  (click)="aceptar()" [disabled]="deshabilitar()">
+        <ion-icon slot="icon-only" name="checkmark-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Almacenamiento</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <!-- VISTA NORMAL-->
+<!--  <ion-grid *ngIf="!globalUsu.gestor">
+   <ion-list *ngFor="let a of almacenamientoArray">
+    <ion-item>
+      <ion-row (click)="opciones(a)">{{a.ubicacion}}</ion-row>
+    </ion-item>
+  </ion-list>
+</ion-grid>  -->
+
+  <!-- VISTA ADMINISTRADOR-->
+  <ion-grid >
+    <ion-row>
+      <ion-col size="6" class="titulo">
+        <ion-item class="titulo">
+          <h4><strong class="titulo">ALMACÉN</strong></h4>
+        </ion-item>
+      </ion-col>
+      <ion-col size="6" class="titulo">
+        <ion-item class="titulo">
+          <h4><strong class="titulo">JUEGOS</strong><ion-button *ngIf="!deshabilitar()" fill="clear" (click)="borrarTodo()">
+            <ion-icon name="close-circle"></ion-icon>
+          </ion-button> </h4>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="6">
+        <ion-list *ngFor="let a of almacenamientoArray">
+          <ion-item>
+            <ion-row>
+              <label (click)="opciones(a)">{{a.ubicacion}}</label>
+              <ion-button fill="clear" (click)="annadirJuego(a)">
+                <ion-icon name="add-circle"></ion-icon>
+              </ion-button>
+            </ion-row>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+      <ion-col size="6">
+
+        <ion-item *ngFor="let j of juegosEvento"> {{j.juego.nombre}}
+          <ion-button fill="clear" (click)="confirmarJuego(j.juego)">
+            <ion-icon name="remove-circle"></ion-icon>
+          </ion-button>
+
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -55,6 +55,10 @@ const routes: Routes = [
     path: 'ver-almacenamiento',
     loadChildren: () => import('./ver-almacenamiento/ver-almacenamiento.module').then( m => m.VerAlmacenamientoPageModule)
   },
+  {
+    path: 'listado-almacenamiento',
+    loadChildren: () => import('./listado-almacenamiento/listado-almacenamiento.module').then( m => m.ListadoAlmacenamientoPageModule)
+  },
 ];
 
 @NgModule({

@@ -1,10 +1,8 @@
-import { Juego } from "./Juego"
-
 export class Almacenamiento{
     
     id:string= ''
     ubicacion:string=''
-    juegos:Juego[]=[]
+    juegos:string[]=[]
 
     constructor(){}
 
@@ -14,7 +12,7 @@ export class Almacenamiento{
         almacenamiento.id = jsonObject['id'];
         almacenamiento.ubicacion = jsonObject['ubicacion'];
         jsonObject.juegos.forEach((juegoJson: any) => {
-            almacenamiento.juegos.push(Juego.createFromJsonObject(juegoJson));
+            almacenamiento.juegos.push(juegoJson);
         });
         
         return almacenamiento;

@@ -133,7 +133,7 @@ export class FireServiceProvider {
     return promise;
   }
 
-  /*  getAlmacenamiento(): Promise<Almacenamiento[]> {
+    getAlmacenamiento(): Promise<Almacenamiento[]> {
       let promise = new Promise<Almacenamiento[]>((resolve, reject) => {
         const usuariosRef = this.angularFirestore.collection('Almacenamiento');
         const snapshot = usuariosRef
@@ -141,7 +141,7 @@ export class FireServiceProvider {
           .toPromise()
           .then((data: any) => {
             let almacenamiento = new Array<Almacenamiento>();
-            data.forEach((element) => {
+            data.forEach((element:any) => {
               let usuarioJson = element.data();
               let a = Almacenamiento.createFromJsonObject(usuarioJson);
               almacenamiento.push(a);
@@ -154,7 +154,7 @@ export class FireServiceProvider {
       });
       return promise;
     }
-  */
+  
   //======================================================================================
 
   //==============
@@ -195,6 +195,29 @@ export class FireServiceProvider {
             usuario = Usuario.createFromJsonObject(usuarioJson);
           });
           resolve(usuario);
+        })
+        .catch((error: Error) => {
+          reject(error.message);
+        });
+    });
+    return promise;
+  } //end get usuarios
+
+
+  getJueboById(id: string): Promise<Juego> {
+    let promise = new Promise<Juego>((resolve, reject) => {
+      const juegosRef = this.angularFirestore.collection('ListaJuegos').ref;
+      juegosRef
+        .where('gameId', '==', id)
+        .get()
+        .then((data: any) => {
+          let juego = new Juego();
+          data.forEach((element: any) => {
+            let juegoJson = element.data();
+            juego = Juego.createFromJsonObject(juegoJson);
+            
+          });
+          resolve(juego);
         })
         .catch((error: Error) => {
           reject(error.message);
