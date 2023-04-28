@@ -6,7 +6,7 @@
 
     <!-- Boton de submit-->
     <ion-buttons slot="end">
-      <ion-button  (click)="aceptar()" [disabled]="deshabilitar()">
+      <ion-button (click)="aceptar()" [disabled]="deshabilitar()">
         <ion-icon slot="icon-only" name="checkmark-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -15,10 +15,10 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true">
 
   <!-- VISTA NORMAL-->
-<!--  <ion-grid *ngIf="!globalUsu.gestor">
+  <!--  <ion-grid *ngIf="!globalUsu.gestor">
    <ion-list *ngFor="let a of almacenamientoArray">
     <ion-item>
       <ion-row (click)="opciones(a)">{{a.ubicacion}}</ion-row>
@@ -27,43 +27,45 @@
 </ion-grid>  -->
 
   <!-- VISTA ADMINISTRADOR-->
-  <ion-grid >
-    <ion-row>
-      <ion-col size="6" class="titulo">
-        <ion-item class="titulo">
-          <h4><strong class="titulo">ALMACÉN</strong></h4>
-        </ion-item>
-      </ion-col>
-      <ion-col size="6" class="titulo">
-        <ion-item class="titulo">
-          <h4><strong class="titulo">JUEGOS</strong><ion-button *ngIf="!deshabilitar()" fill="clear" (click)="borrarTodo()">
-            <ion-icon name="close-circle"></ion-icon>
-          </ion-button> </h4>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="6">
-        <ion-list *ngFor="let a of almacenamientoArray">
-          <ion-item>
-            <ion-row>
-              <label (click)="opciones(a)">{{a.ubicacion}}</label>
-              <ion-button fill="clear" (click)="annadirJuego(a, $event)">
-                <ion-icon name="add-circle"></ion-icon>
-              </ion-button>
-            </ion-row>
-          </ion-item>
-        </ion-list>
-      </ion-col>
-      <ion-col size="6">
 
-        <ion-item *ngFor="let j of juegosEvento"> {{j.juego.nombre}}
-          <ion-button fill="clear" (click)="confirmarJuego(j.juego)">
-            <ion-icon name="remove-circle"></ion-icon>
-          </ion-button>
+  <ion-item class="titulo">
+    <h4>ALMACÉN</h4>
+  </ion-item>
 
-        </ion-item>
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col size="12">
+        <ion-segment scrollable>
+          <div *ngFor="let a of almacenamientoArray">
+            <ion-label (click)="opciones(a)">{{a.ubicacion}}</ion-label>
+            <ion-button fill="clear" (click)="annadirJuego(a,$event)">
+              <ion-icon name="add-circle"></ion-icon>
+            </ion-button>
+          </div>
+
+
+        </ion-segment>
       </ion-col>
     </ion-row>
   </ion-grid>
+
+  <ion-item>
+    <h4><strong>JUEGOS</strong>
+      <ion-button *ngIf="!deshabilitar()" fill="clear" (click)="borrarTodo()">
+        <ion-icon name="close-circle"></ion-icon>
+      </ion-button>
+    </h4>
+  </ion-item>
+
+  <div *ngFor="let j of juegosEvento">
+    <ion-label>{{j.juego.nombre}}</ion-label>
+    <ion-button fill="clear" (click)="confirmarJuego(j.juego)">
+      <ion-icon name="remove-circle"></ion-icon>
+    </ion-button>
+
+  </div>
+
+
+
+
 </ion-content>
