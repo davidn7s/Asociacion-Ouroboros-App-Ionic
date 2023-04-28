@@ -29,9 +29,8 @@ export class ListadoAlmacenamientoPage implements OnInit {
 
   almacenamientoArray: Array<Almacenamiento> = new Array();
   juegosEvento: Array<JuegoEvento> = new Array();
-  juegosEventoId:Array<JuegoEvento> = new Array();
+
   private globalUsu: Usuario = new Usuario();
-  deshabilitados:any=[];
 
   constructor(
     public fireService: FireServiceProvider,
@@ -109,11 +108,10 @@ export class ListadoAlmacenamientoPage implements OnInit {
       });
   } //end borrarAlmacenamiento
 
-  annadirJuego(almacenamiento: Almacenamiento, evento:any) {
-    evento.target.disabled=true
-    this.deshabilitados.push(evento.target)
+  annadirJuego(almacenamiento: Almacenamiento) {
     let juego = new Juego();
-    juego.nombre = '--' + almacenamiento.ubicacion + '--';
+    juego.nombre = '====' + almacenamiento.ubicacion + '====';
+    juego.gameId = 'almacen'
     let juegoEvento: JuegoEvento = new JuegoEvento();
     juegoEvento.juego = juego;
     juegoEvento.id = juego.gameId;
@@ -140,7 +138,11 @@ export class ListadoAlmacenamientoPage implements OnInit {
 
   quitarJuego(juego: Juego) {
     this.juegosEvento.forEach((data, index) => {
-      if (data.juego == juego) this.juegosEvento.splice(index, 1);
+      if (data.juego == juego) {
+        this.juegosEvento.splice(index, 1);
+      }
+
+
     });
   } //end quitarJuegos
 
@@ -184,39 +186,45 @@ export class ListadoAlmacenamientoPage implements OnInit {
 
   opciones(almacenamiento: Almacenamiento) {
 
-    if (this.globalUsu.gestor)
-      this.alertCtrl
-        .create({
-          cssClass: 'app-alert',
-          header: 'Opciones',
-          buttons: [
-            {
-              text: 'Ver almacenamientos',
-              handler: () => {
-                this.ventanaModalVer(almacenamiento);
-              },
-            },
-            {
-              text: 'Borrar',
-              handler: () => {
-                this.confirmar(almacenamiento);
-              },
-            },
-            {
-              text: 'Modificar',
-              handler: () => {
-              },
-            },
-            {
-              text: 'Cancelar',
-              handler: () => { }
+    //if (this.globalUsu.gestor)
+    this.alertCtrl
+      .create({
+        cssClass: 'app-alert',
+        header: 'Opciones',
+        buttons: [
+          {
+            text: 'Añadir',
+            handler: () => {
+              this.annadirJuego(almacenamiento)
             }
-          ],
-        })
-        .then((res) => {
-          res.present();
-        });
-    else
+          },
+          {
+            text: 'Ver almacenamientos',
+            handler: () => {
+              this.ventanaModalVer(almacenamiento);
+            },
+          },
+          {
+            text: 'Borrar',
+            handler: () => {
+              this.confirmar(almacenamiento);
+            },
+          },
+          {
+            text: 'Modificar',
+            handler: () => {
+            },
+          },
+          {
+            text: 'Cancelar',
+            handler: () => { }
+          }
+        ],
+      })
+      .then((res) => {
+        res.present();
+      });
+    /*else
       this.alertCtrl
         .create({
           cssClass: 'app-alert',
@@ -238,7 +246,7 @@ export class ListadoAlmacenamientoPage implements OnInit {
         .then((res) => {
           res.present();
         });
-
+*/
   } //end opciones 
 
   confirmar(almacenamiento: Almacenamiento) {
@@ -297,31 +305,59 @@ export class ListadoAlmacenamientoPage implements OnInit {
 
   //AÑADIR CANTIDAD DEL JUEGO
   aceptar() {
+
+    let juegosEventoId: Array<JuegoEvento> = new Array();
+
+    //Elimino el juego ficticio para indicar de que sitio proviene
     this.juegosEvento.forEach((data, index) => {
       this.almacenamientoArray.forEach((data2, index2) => {
-        if (data.juego.nombre == '--' + data2.ubicacion + '--'){
+        if (data.juego.nombre == '--' + data2.ubicacion + '--') {
           this.juegosEvento.splice(index, 1);
         }
-          
       });
     });
 
-    this.juegosEvento.forEach((data:JuegoEvento)=>{
-      let idOriginal=data.juego.gameId
-      for(let inx=0; inx<data.juego.cantidad;inx++){
-        let juegoNuevo=data
-        juegoNuevo.juego.gameId=idOriginal+"."+inx;
-        this.juegosEventoId.push(juegoNuevo);
+    //Creo los juegos dependiendo de la cantidad
+    this.juegosEvento.forEach((data: JuegoEvento) => {
+      let idOriginal = data.juego.gameId
+      for (let inx = 0; inx < data.juego.cantidad; inx++) {
+
+        let juegoNuevo = this.crearJuego(data);
+
+        juegoNuevo.id = idOriginal + "." + inx;
+
+        juegosEventoId.push(juegoNuevo);
       }
     })
 
-    this.juegosEvento.concat(this.juegosEventoId);
+    juegosEventoId.forEach((data) => {
+      data.juego.gameId = data.id;
+    })
 
-
-    this.annadirFecha(this.juegosEvento)
+    this.annadirFecha(juegosEventoId)
 
     this.juegosEvento = new Array();
   } //end aceptar
+
+  crearJuego(datos: JuegoEvento) {
+    let juego = new JuegoEvento();
+    juego.id = datos.id;
+    juego.estado = datos.estado;
+    juego.vecesPrestado = datos.vecesPrestado;
+    let juegoI = new Juego();
+    juegoI.gameId = datos.juego.gameId;
+    juegoI.almacenamiento = datos.juego.almacenamiento;
+    juegoI.cantidad = datos.juego.cantidad;
+    juegoI.edadMinima = datos.juego.edadMinima;
+    juegoI.editorial = datos.juego.editorial;
+    juegoI.imagen = datos.juego.imagen;
+    juegoI.jugadores = datos.juego.jugadores;
+    juegoI.nombre = datos.juego.nombre;
+    juegoI.tiempoJuegoMin = datos.juego.tiempoJuegoMin;
+    juego.juego = juegoI;
+
+    return juego;
+  }//end crearJuego
 
   annadirFecha(juegos: any) {
     this.alertCtrl
@@ -412,10 +448,7 @@ export class ListadoAlmacenamientoPage implements OnInit {
 
   borrarTodo() {
     this.juegosEvento = new Array();
-    for(let inx=0; inx<this.deshabilitados.length;inx++){
-      this.deshabilitados[inx].disabled=false;
-    }
-  }
+  }//end borrarTodo
 
   audio() {
 
