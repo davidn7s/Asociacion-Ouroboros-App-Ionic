@@ -97,7 +97,6 @@ export class RegistroPage implements OnInit {
         password: new FormControl(
           '',
           Validators.compose([
-            Validators.maxLength(15),
             Validators.minLength(8),
             Validators.pattern(
               '^(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).*$'
@@ -116,7 +115,6 @@ export class RegistroPage implements OnInit {
       nombre: new FormControl(
         '',
         Validators.compose([
-          Validators.maxLength(25),
           Validators.minLength(3),
           Validators.required,
         ])
@@ -124,7 +122,6 @@ export class RegistroPage implements OnInit {
       apellidos: new FormControl(
         '',
         Validators.compose([
-          Validators.maxLength(25),
           Validators.minLength(3),
           Validators.required,
         ])
