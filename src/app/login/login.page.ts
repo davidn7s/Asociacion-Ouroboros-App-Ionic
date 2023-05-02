@@ -5,6 +5,7 @@ import { Usuario } from 'src/modelo/Usuario';
 import { FireServiceProvider } from 'src/providers/api-service/fire-service';
 import { FirebaseAuthService } from 'src/providers/api-service/firebase-auth-service';
 import { GlobalMethodsService } from '../global-methods.service';
+import { DataService } from '../services/data.service';
 
 @Component({
   selector: 'app-login',
@@ -24,8 +25,10 @@ export class LoginPage implements OnInit {
   control: boolean = false
   showPassword = false;
   passwordToggleIcon = 'eye'
-  private listData = []
   archivo = new Audio('../../assets/audio/error.mp3')
+  private listData = []
+
+
   constructor(
     public fireAuth: FirebaseAuthService,
     private globalVar: GlobalMethodsService,
@@ -33,7 +36,9 @@ export class LoginPage implements OnInit {
     private router: Router,
     private fireService: FireServiceProvider,
     private loadingController: LoadingController,
-    public alertCtrl: AlertController) {
+    public alertCtrl: AlertController,
+    private dataService: DataService) {
+      this.loadData();
   }
 
   //============================================================================================================
@@ -61,6 +66,9 @@ export class LoginPage implements OnInit {
         .then(() => {
           this.presentToast("Login Correcto!!!")
 
+          if (this.control) {
+            this.addData()
+           }
 
           this.fireService
             .getUsuarioByEmail(this.correo)
@@ -85,6 +93,23 @@ export class LoginPage implements OnInit {
     })
 
   }//end login
+
+
+
+  async loadData(){
+    this.dataService.getData().subscribe(res=>{
+      
+      this.listData=res
+    })
+  }//end loadData
+
+
+  async addData(){
+    await this.dataService.addData(('email '+this.correo))
+    await this.dataService.addData(('contra '+this.contrasenna))
+    this.loadData()
+  }//end addData
+
 
 
   //============================================================================================================
@@ -186,6 +211,5 @@ export class LoginPage implements OnInit {
   audio() {
     this.archivo.play()
   }//end audio
-
 
 }

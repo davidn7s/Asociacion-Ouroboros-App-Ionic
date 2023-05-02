@@ -30,7 +30,7 @@ export class ListadoAlmacenamientoPage implements OnInit {
   juegosEvento: Array<JuegoEvento> = new Array();
   archivo = new Audio('../../assets/audio/alert.wav')
 
-  private globalUsu: Usuario = new Usuario();
+  globalUsu: Usuario = new Usuario();
 
   constructor(
     public fireService: FireServiceProvider,
@@ -56,7 +56,7 @@ export class ListadoAlmacenamientoPage implements OnInit {
   }
 
   ionViewWillEnter() {
-    //this.appComponent.getGlobalUsu();
+    this.appComponent.getGlobalUsu();
     this.globalUsu = this.globalVar.usuGlobal;
   }
 
@@ -173,45 +173,45 @@ export class ListadoAlmacenamientoPage implements OnInit {
 
   opciones(almacenamiento: Almacenamiento) {
 
-    //if (this.globalUsu.gestor)
-    this.alertCtrl
-      .create({
-        cssClass: 'app-alert',
-        header: 'Opciones',
-        buttons: [
-          {
-            text: 'Añadir',
-            handler: () => {
-              this.annadirJuego(almacenamiento)
+    if (this.globalUsu.gestor) {
+      this.alertCtrl
+        .create({
+          cssClass: 'app-alert',
+          header: 'Opciones',
+          buttons: [
+            {
+              text: 'Añadir',
+              handler: () => {
+                this.annadirJuego(almacenamiento)
+              }
+            },
+            {
+              text: 'Ver almacenamientos',
+              handler: () => {
+                this.ventanaModalVer(almacenamiento);
+              },
+            },
+            {
+              text: 'Borrar',
+              handler: () => {
+                this.confirmar(almacenamiento);
+              },
+            },
+            {
+              text: 'Modificar',
+              handler: () => {
+              },
+            },
+            {
+              text: 'Cancelar',
+              handler: () => { }
             }
-          },
-          {
-            text: 'Ver almacenamientos',
-            handler: () => {
-              this.ventanaModalVer(almacenamiento);
-            },
-          },
-          {
-            text: 'Borrar',
-            handler: () => {
-              this.confirmar(almacenamiento);
-            },
-          },
-          {
-            text: 'Modificar',
-            handler: () => {
-            },
-          },
-          {
-            text: 'Cancelar',
-            handler: () => { }
-          }
-        ],
-      })
-      .then((res) => {
-        res.present();
-      });
-    /*else
+          ],
+        })
+        .then((res) => {
+          res.present();
+        });
+    } else {
       this.alertCtrl
         .create({
           cssClass: 'app-alert',
@@ -233,7 +233,9 @@ export class ListadoAlmacenamientoPage implements OnInit {
         .then((res) => {
           res.present();
         });
-*/
+    }
+
+
   } //end opciones 
 
   confirmar(almacenamiento: Almacenamiento) {

@@ -18,51 +18,51 @@
 <ion-content [fullscreen]="true">
 
   <!-- VISTA NORMAL-->
-  <!--  <ion-grid *ngIf="!globalUsu.gestor">
-   <ion-list *ngFor="let a of almacenamientoArray">
-    <ion-item>
-      <ion-row (click)="opciones(a)">{{a.ubicacion}}</ion-row>
-    </ion-item>
-  </ion-list>
-</ion-grid>  -->
-
-  <!-- VISTA ADMINISTRADOR-->
-
-  <ion-item class="titulo">
-    <h4>ALMACÉN</h4>
-  </ion-item>
-
-  <ion-grid fixed>
-    <ion-row>
-      <ion-col size="12">
-        <ion-segment scrollable>
-          <ion-segment-button *ngFor="let a of almacenamientoArray" (click)="opciones(a)">
-            <ion-label>{{a.ubicacion}}</ion-label>
-          </ion-segment-button>
-
-
-        </ion-segment>
-      </ion-col>
-    </ion-row>
+  <ion-grid *ngIf="!globalUsu.gestor">
+    <ion-list *ngFor="let a of almacenamientoArray">
+      <ion-item>
+        <ion-row (click)="opciones(a)">{{a.ubicacion}}</ion-row>
+      </ion-item>
+    </ion-list>
   </ion-grid>
 
-  <ion-item>
-    <h4><strong>JUEGOS</strong>
-      <ion-button *ngIf="!deshabilitar()" fill="clear" (click)="borrarTodo()">
-        <ion-icon name="close-circle"></ion-icon>
-      </ion-button>
-    </h4>
-  </ion-item>
+  <!-- VISTA ADMINISTRADOR-->
+  <div *ngIf="globalUsu.gestor">
+    <ion-item class="titulo">
+      <h4>ALMACÉN</h4>
+    </ion-item>
 
-  <div *ngFor="let j of juegosEvento">
-    <ion-label>{{j.juego.nombre}}</ion-label>
-    <ion-button fill="clear" (click)="confirmarJuego(j.juego)">
-      <ion-icon name="remove-circle"></ion-icon>
-    </ion-button>
+    <ion-grid fixed>
+      <ion-row>
+        <ion-col size="12">
+          <ion-segment scrollable>
+            <ion-segment-button *ngFor="let a of almacenamientoArray" (click)="opciones(a)">
+              <ion-label>{{a.ubicacion}}</ion-label>
+            </ion-segment-button>
+
+
+          </ion-segment>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+    <ion-item>
+      <h4><strong>JUEGOS</strong>
+        <ion-button *ngIf="!deshabilitar()" fill="clear" (click)="borrarTodo()">
+          <ion-icon name="close-circle"></ion-icon>
+        </ion-button>
+      </h4>
+    </ion-item>
+
+    <div *ngFor="let j of juegosEvento">
+      <ion-label>{{j.juego.nombre}}</ion-label>
+      <ion-button fill="clear" (click)="confirmarJuego(j.juego)">
+        <ion-icon name="remove-circle"></ion-icon>
+      </ion-button>
+
+    </div>
 
   </div>
-
-
 
 
 </ion-content>

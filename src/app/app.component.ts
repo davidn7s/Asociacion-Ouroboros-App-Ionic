@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController, ModalController, Platform, ToastController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
-//import { GlobalMethodsService } from './global-methods.service';
-//import { Usuario } from 'src/modelo/Usuario';
+import { GlobalMethodsService } from './global-methods.service';
+import { Usuario } from 'src/modelo/Usuario';
 import { FirebaseAuthService } from 'src/providers/api-service/firebase-auth-service';
 import { FireServiceProvider } from 'src/providers/api-service/fire-service';
 import { Router } from '@angular/router';
-//import { DataService } from './services/data.service';
+import { DataService } from './services/data.service';
 
 
 @Component({
@@ -17,19 +17,19 @@ import { Router } from '@angular/router';
 export class AppComponent implements OnInit {
 
   navigate: any;
-  //private usuarioGlobal: Usuario = new Usuario();
+  usuarioGlobal: Usuario = new Usuario();
 
-
-  constructor(
-    private loadingController: LoadingController, private toastController: ToastController, private router: Router, private platform: Platform, private modalCtrl: ModalController, private fireAuth: FirebaseAuthService, private fireService: FireServiceProvider) {
-    // this.dataService.init();
+  
+  constructor(private dataService: DataService, private loadingController: LoadingController, private toastController: ToastController, private router: Router, private platform: Platform, private modalCtrl: ModalController, private globalVar: GlobalMethodsService, private fireAuth: FirebaseAuthService, private fireService: FireServiceProvider) {
+    this.dataService.init();
     this.sideMenu();
     this.initializeApp();
   }//end constructor
 
 
   ngOnInit(): void {
-
+    this.loadData()
+    
   }//end ngOnInit
 
   async pantallaCarga() {
@@ -60,8 +60,8 @@ export class AppComponent implements OnInit {
     let fecha = new Date();
     let nombre: string = "Evento " + fecha.toLocaleDateString().toString();
 
-
-    this.navigate =
+    if (this.usuarioGlobal.gestor){
+      this.navigate =
       [
         {
           title: "Home",
@@ -89,7 +89,7 @@ export class AppComponent implements OnInit {
           icon: "logo-dropbox"
         },
         {
-          title: "Eventos",
+          title:"Eventos",
           url: "/ver-eventos",
           icon: "calendar"
         },
@@ -98,11 +98,137 @@ export class AppComponent implements OnInit {
           url: "/usuarios",
           icon: "person"
         }
-
-
       ]
+    }else if (this.usuarioGlobal.id != undefined && this.usuarioGlobal.estado){
+      this.navigate =
+      [
+        {
+          title: "Home",
+          url: "/home",
+          icon: "home"
+        },
+        {
+          title: "Sorteo",
+          url: "/sorteo",
+          icon: "dice"
+        },
+        {
+          title: "Juegos",
+          url: "/listado-juegos",
+          icon: "game-controller"
+        },
+        {
+          title: nombre,
+          url: "juegos-evento",
+          icon: "extension-puzzle"
+        },
+        {
+          title: "Almacenamiento",
+          url: "/listado-almacenamiento",
+          icon: "logo-dropbox"
+        },
+      ]
+    }else if(this.usuarioGlobal.id != undefined && !this.usuarioGlobal.estado){
+      this.navigate =
+      [
+        {
+          title: "Home",
+          url: "/home",
+          icon: "home"
+        },
+        {
+          title: "Juegos",
+          url: "/listado-juegos",
+          icon: "game-controller"
+        },
+        {
+          title: "Almacenamiento",
+          url: "/listado-almacenamiento",
+          icon: "logo-dropbox"
+        },
+      ]
+    }else{
+      this.navigate =
+      [
+        {
+          title: "Home",
+          url: "/home",
+          icon: "home"
+        }]
+    }
   }//end sideMenu
 
+  //Método para volver a recoger el usuario global y reinicializar el menú lateral
+  getGlobalUsu() {
+    this.usuarioGlobal = this.globalVar.usuGlobal;
+    this.sideMenu();
+  } //end getGlobalUsu
 
+
+
+
+  async loadData(){
+
+    
+    this.dataService.getData().subscribe(res=>{
+
+      try{
+      let correo=res[0].split(' ')
+      let contra=res[1].split(' ')
+      this.realizarLogin(correo[1],contra[1])
+    }catch(e){
+    }
+
+      
+    }
+
+    )
+
+  }
+
+
+  realizarLogin(correo:string,contra:string){
+    this.pantallaCarga().then(()=>{
+      this.fireAuth.loginUser(correo, contra)
+      .then(() => {
+        this.presentToast("Login Correcto!!!")
+  
+  
+        this.fireService
+          .getUsuarioByEmail(correo)
+          .then((data: Usuario) => {
+            this.loadingController.dismiss()
+            this.globalVar.usuGlobal = data;
+            this.usuarioGlobal = data
+            this.getGlobalUsu()
+            this.router.navigate(['/juegos-evento']);
+          })
+          .catch((error) => {
+            this.loadingController.dismiss()
+            this.presentToast('Ha ocurrido un error inesperado');
+          });
+  
+  
+      }).catch((error: string) => {
+        console.log(error)
+        this.loadingController.dismiss()
+        this.presentToast("Error, no se ha podido recuperar los datos")
+        this.dataService.removeItem()
+        this.dataService.getData().subscribe(res=>{
+        })
+      })
+    })
+   
+  }
+
+
+  async remove(){
+    this.dataService.removeItem()
+    this.sideMenu();
+    this.dataService.getData().subscribe(res=>{
+      window.location.replace("/home");
+    })
+   
+  }
 
 }

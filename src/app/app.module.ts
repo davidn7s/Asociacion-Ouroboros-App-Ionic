@@ -14,6 +14,9 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { environment } from 'src/environments/environment';
 import { ReactiveFormsModule } from '@angular/forms';
+import { IonicStorageModule } from '@ionic/storage-angular';
+import {Drivers} from '@ionic/storage'
+import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver'
 
 @NgModule({
   declarations: [AppComponent],
@@ -24,7 +27,11 @@ import { ReactiveFormsModule } from '@angular/forms';
      HttpClientModule,
      AngularFireModule.initializeApp(environment.firebaseConfig),
      AngularFirestoreModule,
-     ReactiveFormsModule
+     ReactiveFormsModule,
+     IonicStorageModule.forRoot({
+      name:'bbdd',
+      driverOrder:[CordovaSQLiteDriver._driver,Drivers.IndexedDB,Drivers.LocalStorage]
+     })
      ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

@@ -47,7 +47,7 @@ export class ListadoJuegosPage implements OnInit {
   //|Fases Ionic|
   //=============
   ionViewWillEnter() {
-    //this.appComponent.getGlobalUsu();
+    this.appComponent.getGlobalUsu();
     this.globalUsu = this.globalVar.usuGlobal;
   }
 

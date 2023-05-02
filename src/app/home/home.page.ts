@@ -27,7 +27,9 @@ export class HomePage {
   //|Fases Ionic|
   //=============
   ionViewWillEnter() {
-    //this.appComponent.getGlobalUsu();
+    //Hacer que el menú lateral refresque que usuario es el logueado
+    this.appComponent.getGlobalUsu();
+    
     this.globalUsu = this.globalVar.usuGlobal;
   }
 
