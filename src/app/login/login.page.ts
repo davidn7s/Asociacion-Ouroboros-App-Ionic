@@ -4,8 +4,7 @@ import { AlertController, LoadingController, ToastController } from '@ionic/angu
 import { Usuario } from 'src/modelo/Usuario';
 import { FireServiceProvider } from 'src/providers/api-service/fire-service';
 import { FirebaseAuthService } from 'src/providers/api-service/firebase-auth-service';
-import { GlobalMethodsService } from '../global-methods.service'; 
-import { NativeAudio } from '@capacitor-community/native-audio';
+import { GlobalMethodsService } from '../global-methods.service';
 
 @Component({
   selector: 'app-login',
@@ -26,13 +25,13 @@ export class LoginPage implements OnInit {
   showPassword = false;
   passwordToggleIcon = 'eye'
   private listData = []
-  
+  archivo = new Audio('../../assets/audio/error.mp3')
   constructor(
-    public fireAuth: FirebaseAuthService, 
-    private globalVar: GlobalMethodsService, 
-    private toastController: ToastController, 
-    private router: Router, 
-    private fireService: FireServiceProvider, 
+    public fireAuth: FirebaseAuthService,
+    private globalVar: GlobalMethodsService,
+    private toastController: ToastController,
+    private router: Router,
+    private fireService: FireServiceProvider,
     private loadingController: LoadingController,
     public alertCtrl: AlertController) {
   }
@@ -44,23 +43,9 @@ export class LoginPage implements OnInit {
   //=============
 
   ngOnInit() {
-        //Carga del audio
-        NativeAudio.preload({
-          assetId: "error",
-          assetPath: "../../assets/audio/error.mp3",
-          audioChannelNum: 1,
-          isUrl: false
-        });
-
   }
 
-  ionViewWillLeave() {
-    NativeAudio.unload({
-      assetId: 'error',
-    });
-  } //end ionViewWillLeave
 
-  
 
 
 
@@ -71,34 +56,34 @@ export class LoginPage implements OnInit {
   //==========
 
   login() {
-    this.pantallaCarga().then(()=>{
+    this.pantallaCarga().then(() => {
       this.fireAuth.loginUser(this.correo, this.contrasenna)
-      .then(() => {
-        this.presentToast("Login Correcto!!!")
+        .then(() => {
+          this.presentToast("Login Correcto!!!")
 
 
-        this.fireService
-          .getUsuarioByEmail(this.correo)
-          .then((data: Usuario) => {
-            this.loadingController.dismiss()
-            this.globalVar.usuGlobal = data;
-            this.router.navigate(['/home']);
-          })
-          .catch((error:any) => {
-            this.loadingController.dismiss()
-            this.audio();
-            this.presentToast('Ha ocurrido un error inesperado');
-          });
+          this.fireService
+            .getUsuarioByEmail(this.correo)
+            .then((data: Usuario) => {
+              this.loadingController.dismiss()
+              this.globalVar.usuGlobal = data;
+              this.router.navigate(['/home']);
+            })
+            .catch((error: any) => {
+              this.loadingController.dismiss()
+              this.audio();
+              this.presentToast('Ha ocurrido un error inesperado');
+            });
 
 
-      }).catch((error: string) => {
-        console.log(error)
-        this.audio();
-        this.presentToast("Error, el correo electronico o la contraseña son incorrectos")
-        this.loadingController.dismiss();
-      })
+        }).catch((error: string) => {
+          console.log(error)
+          this.audio();
+          this.presentToast("Error, el correo electronico o la contraseña son incorrectos")
+          this.loadingController.dismiss();
+        })
     })
-    
+
   }//end login
 
 
@@ -157,13 +142,13 @@ export class LoginPage implements OnInit {
   }//end deshabilitar
 
 
-  recordar(correo:any) {
-    this.presentToast('Se le ha enviado correo electrónico para recuperar su contraseña,'+
-    '<strong> puede estar en la carpeta de spam</strong>')
+  recordar(correo: any) {
+    this.presentToast('Se le ha enviado correo electrónico para recuperar su contraseña,' +
+      '<strong> puede estar en la carpeta de spam</strong>')
     this.fireAuth.resetPassword(correo)
   }
 
-  reset(){
+  reset() {
     this.alertCtrl
       .create({
         cssClass: 'app-alert',
@@ -188,7 +173,7 @@ export class LoginPage implements OnInit {
             text: 'Aceptar',
             handler: (data: any) => {
               this.recordar(data['mail'])
-              
+
             },
           }
         ],
@@ -196,28 +181,11 @@ export class LoginPage implements OnInit {
       .then((res) => {
         res.present();
       });
-    }
+  }
 
-    audio() {
-
-      //Cojo la duración del audio
-      let duracion!: number;
-        
-  
-      NativeAudio.getDuration({
-        assetId: 'error'
-      })
-        .then(result => {
-          duracion = result.duration;
-        })
-  
-  
-      //Ejecuto el audio
-      NativeAudio.play({
-        assetId: 'error',
-        time: duracion
-      });
-    }//end audio
+  audio() {
+    this.archivo.play()
+  }//end audio
 
 
 }

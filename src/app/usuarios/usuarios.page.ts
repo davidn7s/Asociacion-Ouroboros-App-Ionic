@@ -10,7 +10,7 @@ import { Usuario } from 'src/modelo/Usuario';
 import { FireServiceProvider } from 'src/providers/api-service/fire-service';
 import { GlobalMethodsService } from '../global-methods.service';
 import { ModificarUsuarioPage } from '../modificar-usuario/modificar-usuario.page';
-import { NativeAudio } from '@capacitor-community/native-audio'
+
 
 @Component({
   selector: 'app-usuarios',
@@ -31,6 +31,8 @@ export class UsuariosPage implements OnInit {
 
   private globalUsu: Usuario = new Usuario();
 
+  archivo = new Audio('../../assets/audio/alert.wav')
+
   constructor(
     private modalController: ModalController,
     private fireService: FireServiceProvider,
@@ -38,8 +40,8 @@ export class UsuariosPage implements OnInit {
     private toastCtrl: ToastController,
     public loadingCtrl: LoadingController,
     private globalVariable: GlobalMethodsService,
-    private router:Router
-  ) {} //end constructor
+    private router: Router
+  ) { } //end constructor
 
   //======================================================================================================================================
 
@@ -48,28 +50,10 @@ export class UsuariosPage implements OnInit {
   //=============
 
   ngOnInit() {
-
-
-
-    this.globalUsu=this.globalVariable.usuGlobal
+    this.globalUsu = this.globalVariable.usuGlobal
     this.getUsuarios();
   } //end ngOnInit
 
-  ionViewWillEnter(){
-         //Carga del audio
-         NativeAudio.preload({
-          assetId: "alerta",
-          assetPath: "../../assets/audio/alert.wav",
-          audioChannelNum: 1,
-          isUrl: false
-        });
-  }
-
-  ionViewWillLeave() {
-    NativeAudio.unload({
-      assetId: 'alerta',
-    });
-  } //end ionViewWillLeave
 
   //======================================================================================================================================
 
@@ -78,8 +62,8 @@ export class UsuariosPage implements OnInit {
   //==========
 
   getUsuarios() {
-    this.presentLoading().then(()=>{
-      this.fireService.getUsuariosTR().subscribe((resultadoConsulta:any) => {
+    this.presentLoading().then(() => {
+      this.fireService.getUsuariosTR().subscribe((resultadoConsulta: any) => {
         this.usuariosMuestra = new Array<Usuario>();
         this.usuarios = new Array<Usuario>();
         this.loadingCtrl.dismiss()
@@ -88,25 +72,25 @@ export class UsuariosPage implements OnInit {
             datos.payload.doc.data()
           );
           this.usuarios.push(usuario);
-         
-  
+
+
           //Ordenar usuarios alfabéticamente
           this.usuarios.sort(this.ordenar);
           this.usuariosMuestra.sort(this.ordenar);
-  
+
           this.cambioTipo()
           this.loadingCtrl.dismiss()
         });
       });
     })
-   
+
   } //end getUsuarios
 
   borrarUsuario(usuario: Usuario) {
     this.fireService
-      .eliminarUsuario(usuario,true)
-      .then(() => {})
-      .catch((error: string) => {});
+      .eliminarUsuario(usuario, true)
+      .then(() => { })
+      .catch((error: string) => { });
   } //end borrarUsuario
 
   //======================================================================================================================================
@@ -118,30 +102,34 @@ export class UsuariosPage implements OnInit {
   opciones(usuario: Usuario) {
     this.alertCtrl
       .create({
-        cssClass:'app-alert',
-        header:'Opciones',
+        cssClass: 'app-alert',
+        header: 'Opciones',
         buttons: [
-          {text:'Cambiar administrador',
-          handler:()=>{
-            if(!usuario.gestor)
-            usuario.gestor=true
-          else
-            usuario.gestor=false
+          {
+            text: 'Cambiar administrador',
+            handler: () => {
+              if (!usuario.gestor)
+                usuario.gestor = true
+              else
+                usuario.gestor = false
 
-          this.fireService.modificarUsuario(usuario)
+              this.fireService.modificarUsuario(usuario)
 
-          }},
-          {text:'Cambiar estado',
-          handler:()=>{
-            if(!usuario.estado)
-              usuario.estado=true
-            else
-              usuario.estado=false
+            }
+          },
+          {
+            text: 'Cambiar estado',
+            handler: () => {
+              if (!usuario.estado)
+                usuario.estado = true
+              else
+                usuario.estado = false
 
-            this.fireService.modificarUsuario(usuario)
-            
-          }},
-         
+              this.fireService.modificarUsuario(usuario)
+
+            }
+          },
+
           {
             text: 'Modificar',
             handler: () => {
@@ -152,7 +140,7 @@ export class UsuariosPage implements OnInit {
           {
             text: 'Borrar',
             handler: () => {
-              if (usuario.id != this.globalUsu.id) 
+              if (usuario.id != this.globalUsu.id)
                 this.confirmar(usuario);
               else
                 this.presentToast(
@@ -161,7 +149,7 @@ export class UsuariosPage implements OnInit {
             },
           },
 
-          {text:'Cancelar'}
+          { text: 'Cancelar' }
         ],
       })
       .then((res) => {
@@ -173,7 +161,7 @@ export class UsuariosPage implements OnInit {
     this.audio();
     this.alertCtrl
       .create({
-        cssClass:'app-alert',
+        cssClass: 'app-alert',
         header: '¿Estas seguro de borrar la usuario?',
         buttons: [
           {
@@ -184,7 +172,7 @@ export class UsuariosPage implements OnInit {
           },
           {
             text: 'Cancelar',
-            handler: () => {},
+            handler: () => { },
           },
         ],
       })
@@ -247,7 +235,7 @@ export class UsuariosPage implements OnInit {
   //|Otros métodos|
   //===============
 
-  ordenar(a:any, b:any) {
+  ordenar(a: any, b: any) {
     return a.nombre.localeCompare(b.nombre);
   } //end ordenar
 
@@ -271,7 +259,7 @@ export class UsuariosPage implements OnInit {
     );
   } //end cambioTipo
 
-  buscar(ev:any) {
+  buscar(ev: any) {
     this.textoBuscar = ev.detail.value;
   } //end buscar
 
@@ -283,29 +271,13 @@ export class UsuariosPage implements OnInit {
     return loading.present();
   }//end presentLoading
 
-  registrarUsu(){
+  registrarUsu() {
     this.router.navigate(['/registro'])
   }
 
-  
+
   audio() {
-
-    //Cojo la duración del audio
-    let duracion!: number;
-
-    NativeAudio.getDuration({
-      assetId: 'alerta'
-    })
-      .then(result => {
-        duracion = result.duration;
-      })
-
-
-    //Ejecuto el audio
-    NativeAudio.play({
-      assetId: 'alerta',
-      time: duracion
-    });
+    this.archivo.play()
   }//end audio
 
 } //end class

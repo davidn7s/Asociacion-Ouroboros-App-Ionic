@@ -4,7 +4,6 @@ import { Participante } from 'src/modelo/Participante';
 import { FireServiceProvider } from 'src/providers/api-service/fire-service';
 import { AnnadirPage } from '../annadir/annadir.page';
 import { SortearPage } from '../sortear/sortear.page';
-import { NativeAudio } from '@capacitor-community/native-audio';
 
 @Component({
   selector: 'app-sorteo',
@@ -25,6 +24,8 @@ export class SorteoPage implements OnInit {
   contador: number = 0;
   textoBuscar: string = '';
 
+  archivo = new Audio('../../assets/audio/alert.wav')
+
   constructor(
     public modalCtrl: ModalController,
     public fireService: FireServiceProvider,
@@ -39,15 +40,6 @@ export class SorteoPage implements OnInit {
   //=============
 
   ngOnInit() {
-       //Carga del audio
-       NativeAudio.preload({
-        assetId: "alerta",
-        assetPath: "../../assets/audio/alert.wav",
-        audioChannelNum: 1,
-        isUrl: false
-      });
-
-      
     let fecha = new Date();
     this.fechaActual = fecha.toLocaleDateString();
 
@@ -59,11 +51,6 @@ export class SorteoPage implements OnInit {
     this.contador = 0;
   }//end ionViewWillEnter
 
-  ionViewWillLeave() {
-    NativeAudio.unload({
-      assetId: 'alerta',
-    });
-  } //end ionViewWillLeave
 
   //======================================================================================================================================
 
@@ -72,40 +59,40 @@ export class SorteoPage implements OnInit {
   //==========
 
   getParticipantes() {
-    this.presentLoading().then(()=>{
+    this.presentLoading().then(() => {
       this.fireService.getParticipantesTR().subscribe((resultadoConsulta: any) => {
 
         if (resultadoConsulta.length == 0) {
           this.loadingCtrl.dismiss()
         }
-  
-  
-  
+
+
+
         this.contador = 0;
         this.contadorTot = 0;
-  
+
         this.participantes = new Array<Participante>();
         this.participantesSortear = new Array<string>();
-        
+
         resultadoConsulta.forEach((datos: any) => {
           let participante: Participante = Participante.createFromJsonObject(
             datos.payload.doc.data()
           );
           this.participantes.push(participante);
-  
+
           for (let inx = 0; inx < participante.puntos; inx++)
             this.participantesSortear.push(
               participante.nombre + ' ' + participante.apellidos
             );
-  
+
           this.contadorTot += participante.puntos;
           this.contador++;
-  
-  
+
+
           //Ordenar participantes alfabéticamente
           this.participantes.sort(this.ordenar);
 
-          
+
         });
 
         this.loadingCtrl.dismiss()
@@ -312,24 +299,7 @@ export class SorteoPage implements OnInit {
     return loading.present();
   }//end presentLoading
 
-    audio() {
-
-    //Cojo la duración del audio
-    let duracion!: number;
-      
-
-    NativeAudio.getDuration({
-      assetId: 'alerta'
-    })
-      .then(result => {
-        duracion = result.duration;
-      })
-
-
-    //Ejecuto el audio
-    NativeAudio.play({
-      assetId: 'alerta',
-      time: duracion
-    });
+  audio() {
+    this.archivo.play()
   }//end audio
 }

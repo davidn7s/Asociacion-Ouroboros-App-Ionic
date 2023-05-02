@@ -3,7 +3,6 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { AlertController, ModalController, NavParams, ToastController } from '@ionic/angular';
 import { Juego } from 'src/modelo/Juego';
 import { FireServiceProvider } from 'src/providers/api-service/fire-service';
-import { NativeAudio } from '@capacitor-community/native-audio'
 
 @Component({
   selector: 'app-annadir-juego',
@@ -38,6 +37,8 @@ export class AnnadirJuegoPage implements OnInit {
   idControl = true;
   lockIcon:string='lock-closed';
 
+  archivo= new Audio('../../assets/audio/alert.wav')
+
 
   constructor(private modalCtrl: ModalController,
     private formBuilder: FormBuilder,
@@ -53,15 +54,6 @@ export class AnnadirJuegoPage implements OnInit {
   //|Fases Ionic|
   //=============
   ngOnInit() {
-    //Carga del audio
-    NativeAudio.preload({
-      assetId: "alerta",
-      assetPath: "../../assets/audio/alert.wav",
-      audioChannelNum: 1,
-      isUrl: false
-    });
-
-
     this.juego = Juego.createFromJsonObject(JSON.parse(this.juegoJson));
     this.lastFileName = this.juego.imagen;
     this.idOriginal = this.juego.gameId;
@@ -127,12 +119,6 @@ export class AnnadirJuegoPage implements OnInit {
     });
   }
 
-
-  ionViewWillLeave() {
-    NativeAudio.unload({
-      assetId: 'alerta',
-    });
-  } //end ionViewWillLeave
 
   onSubmit() {
 
@@ -294,24 +280,8 @@ export class AnnadirJuegoPage implements OnInit {
 
 
   audio() {
-
-    //Cojo la duración del audio
-    let duracion!: number;
-
-    NativeAudio.getDuration({
-      assetId: 'alerta'
-    })
-      .then(result => {
-        duracion = result.duration;
-      })
-
-
-    //Ejecuto el audio
-    NativeAudio.play({
-      assetId: 'alerta',
-      time: duracion
-    });
-  }//end audio
+    this.archivo.play();
+    }//end audio
 
 
 }

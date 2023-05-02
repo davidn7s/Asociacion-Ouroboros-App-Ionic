@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NativeAudio } from '@capacitor-community/native-audio';
 import { LoadingController, MenuController, ToastController } from '@ionic/angular';
 import { Usuario } from 'src/modelo/Usuario';
 import { FireServiceProvider } from 'src/providers/api-service/fire-service';
@@ -31,6 +30,8 @@ export class RegistroPage implements OnInit {
 
   showPassword = false;
   passwordToggleIcon = 'eye'
+
+  archivo = new Audio('../../assets/audio/error.mp3')
 
   constructor(
     private firebaseService: FireServiceProvider,
@@ -62,7 +63,7 @@ export class RegistroPage implements OnInit {
         },
         {
           type: 'pattern',
-          message:'Tu contraseña tiene que contener al menos una mayuscula, una minúscula y un número.',
+          message: 'Tu contraseña tiene que contener al menos una mayuscula, una minúscula y un número.',
         },
       ],
       confirmPassword: [
@@ -83,14 +84,6 @@ export class RegistroPage implements OnInit {
   //=============
 
   ngOnInit() {
-
-    //Carga del audio
-    NativeAudio.preload({
-      assetId: "error",
-      assetPath: "../../assets/audio/error.mp3",
-      audioChannelNum: 1,
-      isUrl: false
-    });
 
     this.matching_passwords_group = new FormGroup(
       {
@@ -152,9 +145,6 @@ export class RegistroPage implements OnInit {
 
   ionViewWillLeave() {
     this.menu.enable(true);
-    NativeAudio.unload({
-      assetId: 'error',
-    });
   } //end ionViewWillLeave
 
 
@@ -167,41 +157,41 @@ export class RegistroPage implements OnInit {
   //==========
 
   insertar(usuario: Usuario, contrasenna: string) {
-    this.pantallaCarga().then(()=>{
+    this.pantallaCarga().then(() => {
       this.fireAuth
-      .loginUser(usuario.email, contrasenna)
-      .then((usuario: Usuario) => {
-        this.audio();
-        this.presentToast(
-          'Error, email ya registrado, no se ha podido registrar el usuario'
-        );
-       this.loadingCtrl.dismiss();
-      })
-      .catch((error: string) => {
-        this.firebaseService
-          .insertarUsuario(usuario)
-          .then(() => {
-            this.fireAuth
-              .registerUser(usuario.email, contrasenna)
-              .then((data) => {
-                this.loadingCtrl.dismiss();
-                this.presentToast('Registro completado');
-                this.router.navigate(['usuarios'])
-              })
-              .catch((error) => {
-                this.loadingCtrl.dismiss();
-                console.log(error)
-                this.firebaseService.eliminarUsuario(usuario, false);
-                this.audio();
-                this.presentToast(
-                  'Error, email ya registrado, no se ha podido registrar el usuario'
-                );
-              });
-          })
-          .catch((error: string) => { });
-      });
+        .loginUser(usuario.email, contrasenna)
+        .then((usuario: Usuario) => {
+          this.audio();
+          this.presentToast(
+            'Error, email ya registrado, no se ha podido registrar el usuario'
+          );
+          this.loadingCtrl.dismiss();
+        })
+        .catch((error: string) => {
+          this.firebaseService
+            .insertarUsuario(usuario)
+            .then(() => {
+              this.fireAuth
+                .registerUser(usuario.email, contrasenna)
+                .then((data) => {
+                  this.loadingCtrl.dismiss();
+                  this.presentToast('Registro completado');
+                  this.router.navigate(['usuarios'])
+                })
+                .catch((error) => {
+                  this.loadingCtrl.dismiss();
+                  console.log(error)
+                  this.firebaseService.eliminarUsuario(usuario, false);
+                  this.audio();
+                  this.presentToast(
+                    'Error, email ya registrado, no se ha podido registrar el usuario'
+                  );
+                });
+            })
+            .catch((error: string) => { });
+        });
     });
-    
+
   }//end insertar
 
 
@@ -271,24 +261,7 @@ export class RegistroPage implements OnInit {
 
 
   audio() {
-
-    //Cojo la duración del audio
-    let duracion!: number;
-      
-
-    NativeAudio.getDuration({
-      assetId: 'error'
-    })
-      .then(result => {
-        duracion = result.duration;
-      })
-
-
-    //Ejecuto el audio
-    NativeAudio.play({
-      assetId: 'error',
-      time: duracion
-    });
+    this.archivo.play()
   }//end audio
 
 }//end class

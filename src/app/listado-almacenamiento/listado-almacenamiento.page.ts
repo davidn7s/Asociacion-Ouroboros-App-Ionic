@@ -12,7 +12,6 @@ import { FireServiceProvider } from 'src/providers/api-service/fire-service';
 import { AppComponent } from '../app.component';
 import { GlobalMethodsService } from '../global-methods.service';
 import { VerAlmacenamientoPage } from '../ver-almacenamiento/ver-almacenamiento.page';
-import { NativeAudio } from '@capacitor-community/native-audio';
 
 @Component({
   selector: 'app-listado-almacenamiento',
@@ -29,6 +28,7 @@ export class ListadoAlmacenamientoPage implements OnInit {
 
   almacenamientoArray: Array<Almacenamiento> = new Array();
   juegosEvento: Array<JuegoEvento> = new Array();
+  archivo = new Audio('../../assets/audio/alert.wav')
 
   private globalUsu: Usuario = new Usuario();
 
@@ -49,14 +49,6 @@ export class ListadoAlmacenamientoPage implements OnInit {
   //=============
 
   ngOnInit() {
-    //Carga del audio
-    NativeAudio.preload({
-      assetId: "alerta",
-      assetPath: "../../assets/audio/alert.wav",
-      audioChannelNum: 1,
-      isUrl: false
-    });
-
   }
 
   ionViewDidEnter() {
@@ -68,11 +60,6 @@ export class ListadoAlmacenamientoPage implements OnInit {
     this.globalUsu = this.globalVar.usuGlobal;
   }
 
-  ionViewWillLeave() {
-    NativeAudio.unload({
-      assetId: 'alerta',
-    });
-  } //end ionViewWillLeave
 
   //============================================================================================================
 
@@ -451,23 +438,6 @@ export class ListadoAlmacenamientoPage implements OnInit {
   }//end borrarTodo
 
   audio() {
-
-    //Cojo la duración del audio
-    let duracion!: number;
-
-
-    NativeAudio.getDuration({
-      assetId: 'alerta'
-    })
-      .then(result => {
-        duracion = result.duration;
-      })
-
-
-    //Ejecuto el audio
-    NativeAudio.play({
-      assetId: 'alerta',
-      time: duracion
-    });
+    this.archivo.play()
   }//end audio
 } //end class

@@ -28,7 +28,6 @@
     "@capacitor/status-bar": "4.1.1",
     "@ionic-native/core": "^5.36.0",
     "@ionic-native/media-capture": "^5.36.0",
-    "@ionic-native/native-audio": "^5.36.0",
     "@ionic-native/splash-screen": "^5.36.0",
     "@ionic/angular": "^6.1.9",
     "firebase": "^9.18.0",
