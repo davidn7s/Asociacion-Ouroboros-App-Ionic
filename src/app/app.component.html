@@ -7,11 +7,11 @@
     </ion-header>
     <ion-content>
 
-      <ion-item *ngIf="usuarioGlobal.id != undefined" >
+      <ion-item *ngIf="usuarioGlobal.id != undefined">
         <!--Datos del usuario-->
         <ion-grid class="user">
           <ion-row>
-            <ion-col size="11">
+            <ion-col size="10">
               {{ usuarioGlobal.nombre }}
               <ion-row>
                 {{ usuarioGlobal.apellidos }}
@@ -19,42 +19,45 @@
             </ion-col>
 
             <ion-col size="1">
+              <button class="icono" ion-button icon-only (click)="update()">
+                <ion-icon name="create"></ion-icon></button></ion-col>
+
+            <ion-col size="1">
               <button class="icono" ion-button icon-only (click)="remove()">
-                <ion-icon name="log-out"></ion-icon></button
-            ></ion-col>
+                <ion-icon name="log-out"></ion-icon></button></ion-col>
           </ion-row>
         </ion-grid>
       </ion-item>
 
       <ion-list *ngFor="let pages of navigate">
-      <ion-menu-toggle auto-hide="true">
-        <ion-item [routerLink]="pages.url" routerDirection="forward">
+        <ion-menu-toggle auto-hide="true">
+          <ion-item [routerLink]="pages.url" routerDirection="forward">
             <ion-icon [name]="pages.icon" slot="start"></ion-icon>
-               {{pages.title}} 
-        </ion-item>
-      </ion-menu-toggle>
+            {{pages.title}}
+          </ion-item>
+        </ion-menu-toggle>
       </ion-list>
     </ion-content>
 
 
 
 
-      <!--Redes sociales-->
-      <ion-item>
-        <ion-grid>
-          <ion-row>
-            <ion-col size="3"
-              onclick="window.open('https://www.instagram.com/aso_ouroboros/','_system','Location=yes'); ">
-              <ion-icon class="verde" name="logo-instagram"></ion-icon>
-            </ion-col>
+    <!--Redes sociales-->
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="3"
+            onclick="window.open('https://www.instagram.com/aso_ouroboros/','_system','Location=yes'); ">
+            <ion-icon class="verde" name="logo-instagram"></ion-icon>
+          </ion-col>
 
 
-            <ion-col size="3" onclick="window.open('https://twitter.com/aso_ouroboros','_system','Location=yes'); ">
-              <ion-icon class="verde" name="logo-twitter"></ion-icon>
-            </ion-col>
-          </ion-row>
-        </ion-grid>
-      </ion-item>
+          <ion-col size="3" onclick="window.open('https://twitter.com/aso_ouroboros','_system','Location=yes'); ">
+            <ion-icon class="verde" name="logo-twitter"></ion-icon>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
   </ion-menu>
-<ion-router-outlet id="content1"></ion-router-outlet>
+  <ion-router-outlet id="content1"></ion-router-outlet>
 </ion-app>

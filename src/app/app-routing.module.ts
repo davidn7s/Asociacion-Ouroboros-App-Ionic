@@ -59,6 +59,10 @@ const routes: Routes = [
     path: 'listado-almacenamiento',
     loadChildren: () => import('./listado-almacenamiento/listado-almacenamiento.module').then( m => m.ListadoAlmacenamientoPageModule)
   },
+  {
+    path: 'modificar-usuario-propio',
+    loadChildren: () => import('./modificar-usuario-propio/modificar-usuario-propio.module').then( m => m.ModificarUsuarioPropioPageModule)
+  },
 ];
 
 @NgModule({

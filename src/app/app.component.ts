@@ -29,7 +29,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData()
-    
   }//end ngOnInit
 
   async pantallaCarga() {
@@ -168,23 +167,16 @@ export class AppComponent implements OnInit {
 
 
   async loadData(){
-
-    
     this.dataService.getData().subscribe(res=>{
-
+      console.log(res)
       try{
       let correo=res[0].split(' ')
       let contra=res[1].split(' ')
       this.realizarLogin(correo[1],contra[1])
     }catch(e){
     }
-
-      
-    }
-
-    )
-
-  }
+  })
+  }//end loadData
 
 
   realizarLogin(correo:string,contra:string){
@@ -228,7 +220,17 @@ export class AppComponent implements OnInit {
     this.dataService.getData().subscribe(res=>{
       window.location.replace("/home");
     })
-   
-  }
+  }//end remove
+
+
+  //============================================================================================================
+
+  //==================
+  //|Ventanas Modales|
+  //==================
+
+  update() {
+    this.router.navigateByUrl('modificar-usuario-propio')
+  } //end ventanaModal
 
 }
