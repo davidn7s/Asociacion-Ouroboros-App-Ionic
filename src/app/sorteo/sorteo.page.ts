@@ -295,6 +295,7 @@ export class SorteoPage implements OnInit {
     let loading = await this.loadingCtrl.create({
       message: 'Cargando participantes...',
       spinner: 'bubbles',
+      cssClass:'loader-css-class',
     });
     return loading.present();
   }//end presentLoading

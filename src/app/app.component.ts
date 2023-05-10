@@ -19,7 +19,9 @@ export class AppComponent implements OnInit {
   navigate: any;
   usuarioGlobal: Usuario = new Usuario();
 
-  
+  idControlModificacion: boolean = true;
+
+
   constructor(private dataService: DataService, private loadingController: LoadingController, private toastController: ToastController, private router: Router, private platform: Platform, private modalCtrl: ModalController, private globalVar: GlobalMethodsService, private fireAuth: FirebaseAuthService, private fireService: FireServiceProvider) {
     this.dataService.init();
     this.sideMenu();
@@ -35,6 +37,7 @@ export class AppComponent implements OnInit {
     const loading = await this.loadingController.create({
       message: 'Realizando login ...',
       spinner: 'bubbles',
+      cssClass: 'loader-css-class',
     });
     return loading.present();
   }//end pantallaCarga
@@ -59,165 +62,164 @@ export class AppComponent implements OnInit {
     let fecha = new Date();
     let nombre: string = "Evento " + fecha.toLocaleDateString().toString();
 
-    if (this.usuarioGlobal.gestor){
+    if (this.usuarioGlobal.gestor) {
       this.navigate =
-      [
-        {
-          title: "Home",
-          url: "/home",
-          icon: "home"
-        },
-        {
-          title: "Sorteo",
-          url: "/sorteo",
-          icon: "dice"
-        },
-        {
-          title: "Juegos",
-          url: "/listado-juegos",
-          icon: "game-controller"
-        },
-        {
-          title: nombre,
-          url: "juegos-evento",
-          icon: "extension-puzzle"
-        },
-        {
-          title: "Almacenamiento",
-          url: "/listado-almacenamiento",
-          icon: "logo-dropbox"
-        },
-        {
-          title:"Eventos",
-          url: "/ver-eventos",
-          icon: "calendar"
-        },
-        {
-          title: "Usuarios",
-          url: "/usuarios",
-          icon: "person"
-        }
-      ]
-    }else if (this.usuarioGlobal.id != undefined && this.usuarioGlobal.estado){
+        [
+          {
+            title: "Home",
+            url: "/home",
+            icon: "home"
+          },
+          {
+            title: "Sorteo",
+            url: "/sorteo",
+            icon: "dice"
+          },
+          {
+            title: "Juegos",
+            url: "/listado-juegos",
+            icon: "game-controller"
+          },
+          {
+            title: nombre,
+            url: "juegos-evento",
+            icon: "extension-puzzle"
+          },
+          {
+            title: "Almacenamiento",
+            url: "/listado-almacenamiento",
+            icon: "logo-dropbox"
+          },
+          {
+            title: "Usuarios",
+            url: "/usuarios",
+            icon: "person"
+          }
+        ]
+    } else if (this.usuarioGlobal.id != undefined && this.usuarioGlobal.estado) {
       this.navigate =
-      [
-        {
-          title: "Home",
-          url: "/home",
-          icon: "home"
-        },
-        {
-          title: "Sorteo",
-          url: "/sorteo",
-          icon: "dice"
-        },
-        {
-          title: "Juegos",
-          url: "/listado-juegos",
-          icon: "game-controller"
-        },
-        {
-          title: nombre,
-          url: "juegos-evento",
-          icon: "extension-puzzle"
-        },
-        {
-          title: "Almacenamiento",
-          url: "/listado-almacenamiento",
-          icon: "logo-dropbox"
-        },
-      ]
-    }else if(this.usuarioGlobal.id != undefined && !this.usuarioGlobal.estado){
+        [
+          {
+            title: "Home",
+            url: "/home",
+            icon: "home"
+          },
+          {
+            title: "Sorteo",
+            url: "/sorteo",
+            icon: "dice"
+          },
+          {
+            title: "Juegos",
+            url: "/listado-juegos",
+            icon: "game-controller"
+          },
+          {
+            title: nombre,
+            url: "juegos-evento",
+            icon: "extension-puzzle"
+          },
+          {
+            title: "Almacenamiento",
+            url: "/listado-almacenamiento",
+            icon: "logo-dropbox"
+          },
+        ]
+    } else if (this.usuarioGlobal.id != undefined && !this.usuarioGlobal.estado) {
       this.navigate =
-      [
-        {
-          title: "Home",
-          url: "/home",
-          icon: "home"
-        },
-        {
-          title: "Juegos",
-          url: "/listado-juegos",
-          icon: "game-controller"
-        },
-        {
-          title: "Almacenamiento",
-          url: "/listado-almacenamiento",
-          icon: "logo-dropbox"
-        },
-      ]
-    }else{
+        [
+          {
+            title: "Home",
+            url: "/home",
+            icon: "home"
+          },
+          {
+            title: "Juegos",
+            url: "/listado-juegos",
+            icon: "game-controller"
+          },
+          {
+            title: "Almacenamiento",
+            url: "/listado-almacenamiento",
+            icon: "logo-dropbox"
+          },
+        ]
+    } else {
       this.navigate =
-      [
-        {
-          title: "Home",
-          url: "/home",
-          icon: "home"
-        }]
+        [
+          {
+            title: "Home",
+            url: "/home",
+            icon: "home"
+          }]
     }
   }//end sideMenu
 
   //Método para volver a recoger el usuario global y reinicializar el menú lateral
   getGlobalUsu() {
     this.usuarioGlobal = this.globalVar.usuGlobal;
+
+    if (this.usuarioGlobal.cargo === 'Voluntario' || !this.usuarioGlobal.estado) {
+      this.idControlModificacion = false;
+    }
     this.sideMenu();
   } //end getGlobalUsu
 
 
 
 
-  async loadData(){
-    this.dataService.getData().subscribe(res=>{
+  async loadData() {
+    this.dataService.getData().subscribe(res => {
       console.log(res)
-      try{
-      let correo=res[0].split(' ')
-      let contra=res[1].split(' ')
-      this.realizarLogin(correo[1],contra[1])
-    }catch(e){
-    }
-  })
+      try {
+        let correo = res[0].split(' ')
+        let contra = res[1].split(' ')
+        this.realizarLogin(correo[1], contra[1])
+      } catch (e) {
+      }
+    })
   }//end loadData
 
 
-  realizarLogin(correo:string,contra:string){
-    this.pantallaCarga().then(()=>{
+  realizarLogin(correo: string, contra: string) {
+    this.pantallaCarga().then(() => {
       this.fireAuth.loginUser(correo, contra)
-      .then(() => {
-        this.presentToast("Login Correcto!!!")
-  
-  
-        this.fireService
-          .getUsuarioByEmail(correo)
-          .then((data: Usuario) => {
-            this.loadingController.dismiss()
-            this.globalVar.usuGlobal = data;
-            this.usuarioGlobal = data
-            this.getGlobalUsu()
-            this.router.navigate(['/juegos-evento']);
+        .then(() => {
+          this.presentToast("Login Correcto!!!")
+
+
+          this.fireService
+            .getUsuarioByEmail(correo)
+            .then((data: Usuario) => {
+              this.loadingController.dismiss()
+              this.globalVar.usuGlobal = data;
+              this.usuarioGlobal = data
+              this.getGlobalUsu()
+              this.router.navigate(['/juegos-evento']);
+            })
+            .catch((error) => {
+              this.loadingController.dismiss()
+              this.presentToast('Ha ocurrido un error inesperado');
+            });
+
+
+        }).catch((error: string) => {
+          console.log(error)
+          this.loadingController.dismiss()
+          this.presentToast("Error, no se ha podido recuperar los datos")
+          this.dataService.removeItem()
+          this.dataService.getData().subscribe(res => {
           })
-          .catch((error) => {
-            this.loadingController.dismiss()
-            this.presentToast('Ha ocurrido un error inesperado');
-          });
-  
-  
-      }).catch((error: string) => {
-        console.log(error)
-        this.loadingController.dismiss()
-        this.presentToast("Error, no se ha podido recuperar los datos")
-        this.dataService.removeItem()
-        this.dataService.getData().subscribe(res=>{
         })
-      })
     })
-   
+
   }
 
 
-  async remove(){
+  async remove() {
     this.dataService.removeItem()
     this.sideMenu();
-    this.dataService.getData().subscribe(res=>{
+    this.dataService.getData().subscribe(res => {
       window.location.replace("/home");
     })
   }//end remove

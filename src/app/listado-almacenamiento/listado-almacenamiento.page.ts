@@ -163,9 +163,11 @@ export class ListadoAlmacenamientoPage implements OnInit {
   //===============
 
   async presentLoading() {
+    console.log('que pasa')
     let loading = await this.loadingCtrl.create({
       message: 'Cargando almacenamiento...',
       spinner: 'bubbles',
+      cssClass:'loader-css-class',
     });
     return loading.present();
   } //end presentLoading

@@ -173,6 +173,7 @@ export class ListadoJuegosPage implements OnInit {
     let loading = await this.loadingCtrl.create({
       message: 'Cargando juegos...',
       spinner: 'bubbles',
+      cssClass:'loader-css-class',
     });
     return loading.present();
   }//end presentLoading

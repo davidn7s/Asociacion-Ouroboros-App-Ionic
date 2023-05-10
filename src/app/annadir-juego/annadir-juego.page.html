@@ -15,8 +15,8 @@
 
     <ion-item>
       <ion-label position="stacked" color="withe">ID</ion-label>
-      <input type="text" placeholder="ID" formControlName="id" [readonly]="idControl" (click)="aceptarEdicion()"/>
-      <ion-icon id="candado" slot="end" [name]="lockIcon" (click)="cambioIcono()"></ion-icon>
+      <input type="text" placeholder="ID" formControlName="id" readonly="true"/>
+      <ion-icon id="candado" slot="end" name="lock-closed"></ion-icon>
     </ion-item>
 
     <ion-item>
@@ -48,18 +48,30 @@
       <ion-label position="stacked" color="withe">Cantidad</ion-label>
       <input type="number" placeholder="Cantidad" formControlName="cantidad" min="1" />
     </ion-item>
+
     <ion-item>
-      <ion-img *ngIf="juegoNuevo.imagen!=''" src={{juegoNuevo.imagen}}></ion-img>
-      <ion-img *ngIf="juegoNuevo.imagen==''" src="..\..\assets\icon\404.png"></ion-img>
+      <ion-label position="stacked" color="withe">Almacenamiento</ion-label>
+      <ion-select interface="popover" formControlName="almacen">
+        <ng-container *ngFor="let a of almacenamientoArray">
+          <ion-select-option value="{{a.id}}">{{a.ubicacion}}</ion-select-option>
+        </ng-container>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-img *ngIf="juegoNuevo.imagen!=''" src={{juegoNuevo.imagen}} height="50px"></ion-img>
+      <ion-img *ngIf="juegoNuevo.imagen==''" src="..\..\assets\icon\404.png" height="50px"></ion-img>
     </ion-item>
 
     <ion-input type="text" formControlName="imagen" hidden></ion-input>
+
 
     <ion-button color="rojo" id="rojo2" shape="round" size="medium" expand="">
       <input type="file" (change)="imageOnChange($event)" />
     </ion-button>
 
-    <ion-button id="rojo" color="rojo" class="submit-btn" expand="block" type="submit" [disabled]="validations_form.invalid">Listo</ion-button> 
+    <ion-button id="rojo" color="rojo" class="submit-btn" expand="block" type="submit"
+      [disabled]="validations_form.invalid">Listo</ion-button>
   </form>
 
 

@@ -132,6 +132,7 @@ export class LoginPage implements OnInit {
     const loading = await this.loadingController.create({
       message: 'Realizando login ...',
       spinner: 'bubbles',
+      cssClass:'loader-css-class',
       translucent: true,
     });
     return loading.present();

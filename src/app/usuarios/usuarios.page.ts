@@ -267,6 +267,7 @@ export class UsuariosPage implements OnInit {
     let loading = await this.loadingCtrl.create({
       message: 'Cargando usuarios...',
       spinner: 'bubbles',
+      cssClass:'loader-css-class',
     });
     return loading.present();
   }//end presentLoading

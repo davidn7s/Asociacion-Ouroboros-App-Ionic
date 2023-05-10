@@ -253,6 +253,7 @@ export class RegistroPage implements OnInit {
     const loading = await this.loadingCtrl.create({
       message: 'Realizando login ...',
       spinner: 'bubbles',
+      cssClass:'loader-css-class',
       translucent: true,
     });
     return loading.present();
