@@ -34,11 +34,10 @@ export class VerAlmacenamientoPage implements OnInit {
   ngOnInit() {
     this.almacenamiento = Almacenamiento.createFromJsonObject(JSON.parse(this.almacenamientoJson));
     this.almacenamiento.juegos.forEach((id)=>{
-      this.fireService.getJueboById(id).then((juego)=>{
+      this.fireService.getJuegoById(id).then((juego)=>{
         this.juegos.push(juego)
       })
     })
-    console.log(this.almacenamiento)
   }
 
   //======================================================================================================================================

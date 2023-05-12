@@ -204,7 +204,7 @@ export class FireServiceProvider {
   } //end get usuarios
 
 
-  getJueboById(id: string): Promise<Juego> {
+  getJuegoById(id: string): Promise<Juego> {
     let promise = new Promise<Juego>((resolve, reject) => {
       const juegosRef = this.angularFirestore.collection('ListaJuegos').ref;
       juegosRef
@@ -218,6 +218,28 @@ export class FireServiceProvider {
             
           });
           resolve(juego);
+        })
+        .catch((error: Error) => {
+          reject(error.message);
+        });
+    });
+    return promise;
+  } //end get usuarios
+
+  getAlmacenamientoById(id: string): Promise<Almacenamiento> {
+    let promise = new Promise<Almacenamiento>((resolve, reject) => {
+      const almacenamientoRef = this.angularFirestore.collection('Almacenamiento').ref;
+      almacenamientoRef
+        .where('id', '==', id)
+        .get()
+        .then((data: any) => {
+          let almacenamiento = new Almacenamiento();
+          data.forEach((element: any) => {
+            let almacenamientoJson = element.data();
+            almacenamiento = Almacenamiento.createFromJsonObject(almacenamientoJson);
+            
+          });
+          resolve(almacenamiento);
         })
         .catch((error: Error) => {
           reject(error.message);
@@ -356,24 +378,6 @@ export class FireServiceProvider {
     return promise;
   } //end_eliminar_usuario
 
-  /*
-    borrarEvento(evento): Promise<Boolean> {
-      let promise = new Promise<Boolean>((resolve, reject) => {
-        this.angularFirestore
-        .collection('Juegos-29.11.2022')
-        .get()
-        .toPromise()
-        .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          doc.ref.delete();
-        });
-      });
-      })
-        
-      return promise;
-      
-    } //end_eliminar_usuario
-    */
 
   //======================================================================================
 
@@ -409,6 +413,22 @@ export class FireServiceProvider {
           this.presentToast(
             'Se ha modificado el juego con id: ' + nuevosDatosJuego.gameId
           );
+        })
+        .catch((error: Error) => {
+          reject(error.message);
+        });
+    });
+    return promise;
+  } //end_modificar_juego
+
+  modificarAlmacen(nuevosDatosAlmacen: Almacenamiento): Promise<Almacenamiento> {
+    let promise = new Promise<Almacenamiento>((resolve, reject) => {
+      this.angularFirestore
+        .collection('Almacenamiento')
+        .doc(nuevosDatosAlmacen.id)
+        .update(JSON.parse(JSON.stringify(nuevosDatosAlmacen)))
+        .then(() => {
+          resolve(nuevosDatosAlmacen);
         })
         .catch((error: Error) => {
           reject(error.message);
@@ -587,26 +607,4 @@ export class FireServiceProvider {
   } //end_insertarParticipante
 
 
-  /*
-  insertarEvento(evento:Evento):Promise<Evento>{
-    //Nombre coleccion por fecha de evento
-    let promise = new Promise<Evento>((resolve, reject) => {
-      evento.id = this.angularFirestore
-        .collection('Eventos')
-        .ref.doc().id;
-      this.angularFirestore
-        .collection('Eventos')
-        .doc(evento.id)
-        .set(JSON.parse(JSON.stringify(evento)))
-        .then(() => {
-          resolve(evento);
-        })
-        .catch((error: Error) => {
-          reject(error.message);
-        });
-    });
-    return promise;
-  }
-
-  */
 } //end_class

@@ -170,7 +170,6 @@ export class AppComponent implements OnInit {
 
   async loadData() {
     this.dataService.getData().subscribe(res => {
-      console.log(res)
       try {
         let correo = res[0].split(' ')
         let contra = res[1].split(' ')
@@ -204,7 +203,6 @@ export class AppComponent implements OnInit {
 
 
         }).catch((error: string) => {
-          console.log(error)
           this.loadingController.dismiss()
           this.presentToast("Error, no se ha podido recuperar los datos")
           this.dataService.removeItem()

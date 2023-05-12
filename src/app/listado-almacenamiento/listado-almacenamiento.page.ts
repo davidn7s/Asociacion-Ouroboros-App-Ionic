@@ -107,7 +107,7 @@ export class ListadoAlmacenamientoPage implements OnInit {
     this.juegosEvento.push(juegoEvento);
 
     almacenamiento.juegos.forEach((juego) => {
-      this.fireService.getJueboById(juego)
+      this.fireService.getJuegoById(juego)
         .then((data: Juego) => {
           let juegoEvento: JuegoEvento = new JuegoEvento();
 

@@ -25,10 +25,11 @@ export class AnnadirJuegoPage implements OnInit {
 
   validations_form!: FormGroup;
 
-  juego: Juego = new Juego();
+  private juego: Juego = new Juego();
   juegoNuevo: Juego = new Juego();
-  nuevoId!: string;
-  idOriginal!: string;
+  private nuevoId!: string;
+  private idOriginal!: string;
+  private almacenOriginal!: string;
 
 
   imageFile!: File;
@@ -58,6 +59,7 @@ export class AnnadirJuegoPage implements OnInit {
     this.juego = Juego.createFromJsonObject(JSON.parse(this.juegoJson));
     this.lastFileName = this.juego.imagen;
     this.idOriginal = this.juego.gameId;
+    this.almacenOriginal = this.juego.almacenamiento;
     this.juegoNuevo = this.juego;
 
     this.nuevoId = JSON.parse(this.ultimoId);
@@ -115,7 +117,7 @@ export class AnnadirJuegoPage implements OnInit {
         Validators.compose([Validators.required, Validators.min(1)])
       ),
       almacen: new FormControl(
-        this.juegoNuevo.cantidad,
+        this.juegoNuevo.almacenamiento,
         Validators.compose([Validators.required])
       ),
       imagen: new FormControl(this.juegoNuevo.imagen),
@@ -138,6 +140,7 @@ export class AnnadirJuegoPage implements OnInit {
     this.juegoNuevo.tiempoJuegoMin = values.tiempoJuego;
     this.juegoNuevo.cantidad = values.cantidad
     this.juegoNuevo.imagen = values.imagen;
+    this.juegoNuevo.almacenamiento = values.almacen;
     this.subirJuego();
   }//end onSubmit
 
@@ -153,17 +156,68 @@ export class AnnadirJuegoPage implements OnInit {
       this.firebaseService
         .modificarJuego(this.juegoNuevo)
         .then(() => {
-          this.closeModal();
+
+          this.firebaseService.getAlmacenamientoById(this.almacenOriginal)
+            .then((data) => {
+              //Eliminamos el juego del almacen anterior
+              if (data.id != '') {
+                data.juegos.splice(data.juegos.indexOf(this.juegoNuevo.gameId), 1);
+                this.firebaseService.modificarAlmacen(data);
+              }
+            })
+
+          this.firebaseService.getAlmacenamientoById(this.juegoNuevo.almacenamiento)
+            .then((data) => {
+
+              if (data.id != '') {
+                data.juegos.push(this.juegoNuevo.gameId);
+                this.firebaseService.modificarAlmacen(data)
+                  .then(() => {
+                    this.closeModal()
+                  }).catch((error: string) => {
+                    console.log(error)
+                    this.error(false);
+                    this.closeModal()
+                  });
+              }
+            }).catch((error: string) => {
+              console.log(error)
+              this.closeModal()
+            })
+
         })
         .catch((error: string) => {
           console.log(error);
+          this.closeModal()
         });
     } else {
       this.firebaseService
         .insertarJuego(this.juegoNuevo)
         .then(() => {
-          console.log('Juego insertado');
-          this.closeModal();
+
+          //Modificamos el almacén donde se ubicará el juego nuevo
+          this.firebaseService.getAlmacenamientoById(this.juegoNuevo.almacenamiento)
+            .then((data) => {
+              //Comprobar si está correcto el almacen
+              if (data.id != '') {
+                data.juegos.push(this.juegoNuevo.gameId);
+              }
+
+
+              this.firebaseService.modificarAlmacen(data)
+                .then((data) => {
+                  console.log('Juego insertado');
+                  this.closeModal();
+                }).catch((error: string) => {
+                  console.log(error);
+                  this.firebaseService.eliminarJuego(this.juegoNuevo)
+                    .then(() => {
+                      this.error(true)
+                      this.closeModal()
+                    })
+                })
+            })
+
         })
         .catch((error: string) => {
           console.log(error);
@@ -171,6 +225,7 @@ export class AnnadirJuegoPage implements OnInit {
 
     }
   } //end subirJuego
+
 
 
   imageOnChange(event: any) {
@@ -257,9 +312,20 @@ export class AnnadirJuegoPage implements OnInit {
     let loading = await this.loadingCtrl.create({
       message: 'Cargando ...',
       spinner: 'bubbles',
-      cssClass:'loader-css-class',
+      cssClass: 'loader-css-class',
     });
     return loading.present();
   } //end presentLoading
+
+  error(booleano: boolean) {
+    if (booleano) {
+      this.presentToast("Error, al insertar el nuevo juego, se procede a su eliminación");
+    } else {
+      this.presentToast("Error, al modificar el juego, se procede a dejarlo como anteriormente");
+    }
+    this.closeModal();
+
+
+  }
 
 }
