@@ -10,6 +10,7 @@ import { FireServiceProvider } from 'src/providers/api-service/fire-service';
 import { AnnadirJuegoPage } from '../annadir-juego/annadir-juego.page';
 import { AppComponent } from '../app.component';
 import { GlobalMethodsService } from '../global-methods.service';
+import { error } from 'console';
 
 @Component({
   selector: 'app-listado-juegos',
@@ -29,7 +30,7 @@ export class ListadoJuegosPage implements OnInit {
   textoBuscar: string = '';
   globalUsu: Usuario = new Usuario();
 
-  archivo= new Audio('../../assets/audio/alert.wav')
+  archivo = new Audio('../../assets/audio/alert.wav')
 
   constructor(
     public fireService: FireServiceProvider,
@@ -64,8 +65,8 @@ export class ListadoJuegosPage implements OnInit {
   //===========
 
   getJuegos() {
-    this.presentLoading().then(()=>{
-      this.fireService.getJuegosTR().subscribe((resultadoConsulta:any) => {
+    this.presentLoading().then(() => {
+      this.fireService.getJuegosTR().subscribe((resultadoConsulta: any) => {
 
         if (resultadoConsulta.length == 0) {
           this.loadingCtrl.dismiss()
@@ -76,27 +77,42 @@ export class ListadoJuegosPage implements OnInit {
         resultadoConsulta.forEach((datos: any) => {
           let juego: Juego = Juego.createFromJsonObject(datos.payload.doc.data());
           this.juegos.push(juego);
-          
-  
+
+
           //Ordenar juegos por id
           this.juegos.sort((a, b) => (a.gameId < b.gameId ? -1 : 1));
-          this.loadingCtrl.dismiss();
+          
         });
+        
       });
+      this.loadingCtrl.dismiss();
     });
-    
+
   } //end getJuegos
 
 
   borrarJuego(juego: Juego) {
-    this.fireService
-      .eliminarJuego(juego)
-      .then(() => {
-        console.log('Juego borrado');
-      })
-      .catch((error: string) => {
+    this.fireService.getAlmacenamientoById(juego.almacenamiento)
+      .then((data) => {
+        data.juegos.splice(data.juegos.indexOf(juego.gameId), 1);
+        console.log(data)
+        this.fireService.modificarAlmacen(data).then(() => {
+
+          this.fireService
+            .eliminarJuego(juego)
+            .then(() => {
+              console.log('Juego borrado');
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+
+        }).catch((error: string) => {
+          console.log(error)
+        })
+      }).catch((error: string) => {
         console.log(error);
-      });
+      })
   } //end borrarJuego
 
 
@@ -108,11 +124,11 @@ export class ListadoJuegosPage implements OnInit {
   //==================
 
   async modificarJuego(juego: Juego) {
-    if (juego.gameId == null){
+    if (juego.gameId == null) {
       juego = new Juego();
-      juego.gameId=''
-    } 
-    let ultimo: Juego =this.juegos[this.juegos.length - 1];
+      juego.gameId = ''
+    }
+    let ultimo: Juego = this.juegos[this.juegos.length - 1];
 
     const modal = await this.modalCtrl.create({
       component: AnnadirJuegoPage,
@@ -124,12 +140,9 @@ export class ListadoJuegosPage implements OnInit {
     return await modal.present();
   } //end ventanaModalMod
 
-  annadirJuego(){
+  annadirJuego() {
     this.modificarJuego(new Juego())
-  }
-
-
-
+  }//end annadirJuego
 
 
 
@@ -165,7 +178,7 @@ export class ListadoJuegosPage implements OnInit {
   } //end_confirmar
 
 
-  buscar(ev:any) {
+  buscar(ev: any) {
     this.textoBuscar = ev.detail.value;
   } //end buscar
 
@@ -173,13 +186,13 @@ export class ListadoJuegosPage implements OnInit {
     let loading = await this.loadingCtrl.create({
       message: 'Cargando juegos...',
       spinner: 'bubbles',
-      cssClass:'loader-css-class',
+      cssClass: 'loader-css-class',
     });
     return loading.present();
   }//end presentLoading
 
   audio() {
-  this.archivo.play();
+    this.archivo.play();
   }//end audio
 
 }

@@ -152,78 +152,88 @@ export class AnnadirJuegoPage implements OnInit {
   //|Firebase|
   //==========
   subirJuego() {
-    if (this.idOriginal != null && this.idOriginal != '') {
-      this.firebaseService
-        .modificarJuego(this.juegoNuevo)
-        .then(() => {
-
-          this.firebaseService.getAlmacenamientoById(this.almacenOriginal)
-            .then((data) => {
-              //Eliminamos el juego del almacen anterior
-              if (data.id != '') {
-                data.juegos.splice(data.juegos.indexOf(this.juegoNuevo.gameId), 1);
-                this.firebaseService.modificarAlmacen(data);
-              }
-            })
-
-          this.firebaseService.getAlmacenamientoById(this.juegoNuevo.almacenamiento)
-            .then((data) => {
-
-              if (data.id != '') {
-                data.juegos.push(this.juegoNuevo.gameId);
-                this.firebaseService.modificarAlmacen(data)
-                  .then(() => {
-                    this.closeModal()
-                  }).catch((error: string) => {
-                    console.log(error)
-                    this.error(false);
-                    this.closeModal()
-                  });
-              }
-            }).catch((error: string) => {
-              console.log(error)
-              this.closeModal()
-            })
-
-        })
-        .catch((error: string) => {
-          console.log(error);
-          this.closeModal()
-        });
-    } else {
-      this.firebaseService
-        .insertarJuego(this.juegoNuevo)
-        .then(() => {
-
-          //Modificamos el almacén donde se ubicará el juego nuevo
-          this.firebaseService.getAlmacenamientoById(this.juegoNuevo.almacenamiento)
-            .then((data) => {
-              //Comprobar si está correcto el almacen
-              if (data.id != '') {
-                data.juegos.push(this.juegoNuevo.gameId);
-              }
-
-
-              this.firebaseService.modificarAlmacen(data)
-                .then((data) => {
-                  console.log('Juego insertado');
-                  this.closeModal();
-                }).catch((error: string) => {
-                  console.log(error);
-                  this.firebaseService.eliminarJuego(this.juegoNuevo)
+    this.presentLoading().then(()=>{
+      if (this.idOriginal != null && this.idOriginal != '') {
+        this.firebaseService
+          .modificarJuego(this.juegoNuevo)
+          .then(() => {
+  
+            this.firebaseService.getAlmacenamientoById(this.almacenOriginal)
+              .then((data) => {
+                //Eliminamos el juego del almacen anterior
+                if (data.id != '') {
+                  data.juegos.splice(data.juegos.indexOf(this.juegoNuevo.gameId), 1);
+                  this.firebaseService.modificarAlmacen(data);
+                }
+              })
+  
+            this.firebaseService.getAlmacenamientoById(this.juegoNuevo.almacenamiento)
+              .then((data) => {
+  
+                if (data.id != '') {
+                  data.juegos.push(this.juegoNuevo.gameId);
+                  this.firebaseService.modificarAlmacen(data)
                     .then(() => {
-                      this.error(true)
                       this.closeModal()
-                    })
-                })
-            })
-
-        })
-        .catch((error: string) => {
-          console.log(error);
-        });
-
-    }
+                      this.loadingCtrl.dismiss()
+                    }).catch((error: string) => {
+                      console.log(error)
+                      this.error(false);
+                      this.closeModal()
+                      this.loadingCtrl.dismiss()
+                    });
+                }
+              }).catch((error: string) => {
+                console.log(error)
+                this.closeModal()
+                this.loadingCtrl.dismiss()
+              })
+  
+          })
+          .catch((error: string) => {
+            console.log(error);
+            this.closeModal()
+            this.loadingCtrl.dismiss()
+          });
+      } else {
+        this.firebaseService
+          .insertarJuego(this.juegoNuevo)
+          .then(() => {
+  
+            //Modificamos el almacén donde se ubicará el juego nuevo
+            this.firebaseService.getAlmacenamientoById(this.juegoNuevo.almacenamiento)
+              .then((data) => {
+                //Comprobar si está correcto el almacen
+                if (data.id != '') {
+                  data.juegos.push(this.juegoNuevo.gameId);
+                }
+  
+  
+                this.firebaseService.modificarAlmacen(data)
+                  .then((data) => {
+                    console.log('Juego insertado');
+                    this.loadingCtrl.dismiss()
+                    this.closeModal();
+                  }).catch((error: string) => {
+                    console.log(error);
+                    this.firebaseService.eliminarJuego(this.juegoNuevo)
+                      .then(() => {
+                        this.loadingCtrl.dismiss()
+                        this.error(true)
+                        this.closeModal()
+                      })
+                  })
+              })
+  
+          })
+          .catch((error: string) => {
+            console.log(error);
+            this.loadingCtrl.dismiss()
+          });
+  
+      }
+    })
+ 
   } //end subirJuego
 
 
