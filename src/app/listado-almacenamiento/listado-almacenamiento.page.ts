@@ -3,6 +3,7 @@ import {
   AlertController,
   LoadingController,
   ModalController,
+  ToastController,
 } from '@ionic/angular';
 import { Almacenamiento } from 'src/modelo/Almacenamiento';
 import { Juego } from 'src/modelo/Juego';
@@ -28,7 +29,7 @@ export class ListadoAlmacenamientoPage implements OnInit {
 
   almacenamientoArray: Array<Almacenamiento> = new Array();
   juegosEvento: Array<JuegoEvento> = new Array();
-  archivo = new Audio('../../assets/audio/alert.wav')
+  private archivo = new Audio('../../assets/audio/alert.wav')
 
   globalUsu: Usuario = new Usuario();
 
@@ -38,7 +39,8 @@ export class ListadoAlmacenamientoPage implements OnInit {
     public modalCtrl: ModalController,
     public loadingCtrl: LoadingController,
     private appComponent: AppComponent,
-    private globalVar: GlobalMethodsService
+    private globalVar: GlobalMethodsService,
+    private toastController:ToastController
   ) { }
 
 
@@ -49,16 +51,16 @@ export class ListadoAlmacenamientoPage implements OnInit {
   //=============
 
   ngOnInit() {
-  }
+  }//end ngOnInit
 
   ionViewDidEnter() {
     this.getAlmacenamiento();
-  }
+  }//end ionViewDidEnter
 
   ionViewWillEnter() {
     this.appComponent.getGlobalUsu();
     this.globalUsu = this.globalVar.usuGlobal;
-  }
+  }//end ionViewwillEnter
 
 
   //============================================================================================================
@@ -83,11 +85,20 @@ export class ListadoAlmacenamientoPage implements OnInit {
 
   } //end getAlmacenamiento
 
-
   borrarAlmacenamiento(almacenamiento: Almacenamiento) {
     this.fireService
       .eliminarAlmacenamiento(almacenamiento)
       .then(() => {
+
+
+        almacenamiento.juegos.forEach((id)=>{
+          this.fireService.getJuegoById(id).then((juego)=>{
+            juego.almacenamiento="Sin especificar";
+            this.fireService.modificarJuego(juego);
+          })
+        })
+
+        this.getAlmacenamiento();
         console.log('Almacenamiento borrado');
       })
       .catch((error: string) => {
@@ -134,15 +145,11 @@ export class ListadoAlmacenamientoPage implements OnInit {
   } //end quitarJuegos
 
 
-
-
   //============================================================================================================
 
   //==================
   //|Ventanas Modales|
   //==================
-
-
 
   async ventanaModalVer(almacenamiento: Almacenamiento) {
     const modal = await this.modalCtrl.create({
@@ -154,27 +161,13 @@ export class ListadoAlmacenamientoPage implements OnInit {
     return await modal.present();
   } //end ventanaModalMod 
 
-
-
   //============================================================================================================
 
-  //===============
-  //|Otros Métodos|
-  //===============
-
-  async presentLoading() {
-    console.log('que pasa')
-    let loading = await this.loadingCtrl.create({
-      message: 'Cargando almacenamiento...',
-      spinner: 'bubbles',
-      cssClass:'loader-css-class',
-    });
-    return loading.present();
-  } //end presentLoading
-
+  //====================
+  //|Alerts Controllers|
+  //====================
 
   opciones(almacenamiento: Almacenamiento) {
-
     if (this.globalUsu.gestor) {
       this.alertCtrl
         .create({
@@ -194,14 +187,9 @@ export class ListadoAlmacenamientoPage implements OnInit {
               },
             },
             {
-              text: 'Borrar',
+              text: 'Más opciones',
               handler: () => {
-                this.confirmar(almacenamiento);
-              },
-            },
-            {
-              text: 'Modificar',
-              handler: () => {
+                this.masOpciones(almacenamiento);
               },
             },
             {
@@ -220,25 +208,110 @@ export class ListadoAlmacenamientoPage implements OnInit {
           header: 'Opciones',
           buttons: [
             {
-              text: 'Cancelar',
-              handler: () => { }
-            },
-            {
               text: 'Ver almacenamientos',
               handler: () => {
                 this.ventanaModalVer(almacenamiento);
               },
             },
-
+            {
+              text: 'Cancelar',
+              handler: () => { }
+            },
           ],
         })
         .then((res) => {
           res.present();
         });
     }
+  } //end opciones
 
 
-  } //end opciones 
+  masOpciones(almacenamiento:Almacenamiento){
+    this.alertCtrl
+    .create({
+      cssClass: 'app-alert',
+      header: 'Más opciones',
+      buttons: [
+        {
+          text: 'Modificar',
+          handler: () => {
+            this.annadirAlmacenamiento(false,almacenamiento);
+          },
+        },
+        {
+          text: 'Borrar',
+          handler: () => {
+            this.confirmar(almacenamiento);
+          },
+        },
+        {
+          text: 'Cancelar',
+          handler: () => { }
+        }
+      ],
+    })
+    .then((res) => {
+      res.present();
+    });
+  }//end masOpciones
+  
+  annadirAlmacenamiento(annadir:boolean,almacen:Almacenamiento) {
+    let mensaje='Crear un nuevo almacén'
+    if(!annadir){
+      mensaje=`Modificar ${almacen.ubicacion}`
+    }
+    this.alertCtrl
+      .create({
+        cssClass: 'app-alert',
+        header: mensaje,
+        inputs: [
+          {
+            name: 'nombre',
+            value: '',
+            type: 'text',
+            placeholder: 'Escriba el nombre'
+          }
+        ],
+        buttons: [
+          {
+            text: 'Cancelar',
+            handler: () => {
+              
+            },
+          },
+          {
+            text: 'Añadir',
+            handler: (data : any) => {
+              if(annadir){
+                let almacenNuevo:Almacenamiento=new Almacenamiento();
+                almacenNuevo.id=this.getLastId();
+                almacenNuevo.ubicacion=data['nombre'];
+  
+                this.fireService.insertarAlmacen(almacenNuevo).
+                then((data:any)=>{
+                  this.getAlmacenamiento();
+                }).catch((error:string)=>{
+                  console.log(error);
+                  this.presentToast('Error al crear el nuevo almacén')
+                })
+              }else{
+                almacen.ubicacion=data['nombre'];
+                this.fireService.modificarAlmacen(almacen).
+                then((data:any)=>{
+                  this.getAlmacenamiento();
+                }).catch((error:string)=>{
+                  console.log(error);
+                  this.presentToast('Error al crear el nuevo almacén')
+                })
+              }
+            },
+          },
+        ],
+      })
+      .then((res) => {
+        res.present();
+      });
+  } //end annadirAlmacenamiento
 
   confirmar(almacenamiento: Almacenamiento) {
     this.audio();
@@ -290,13 +363,66 @@ export class ListadoAlmacenamientoPage implements OnInit {
       .then((res) => {
         res.present();
       });
-  } //end confirmar
+  } //end confirmarJuego
+
+  annadirFecha(juegos: any) {
+    this.alertCtrl
+      .create({
+        cssClass: 'app-alert',
+        header:
+          '¿Qué día será el evento?',
+        inputs: [
+          {
+            name: 'dia',
+            value: new Date(),
+            type: 'date',
+          }
+        ],
+        buttons: [
+
+          {
+            text: 'Cancelar',
+            handler: () => {
+              console.log('Cancelar');
+            },
+          },
+          {
+            text: 'Añadir',
+            handler: (data: any) => {
+              let fecha: Date = new Date()
+              fecha = data['dia']
+              fecha = new Date(fecha)
+              juegos.forEach((data: any) => {
+                this.fireService.insertarJuegosEventos(data, fecha);
+              });
 
 
+            },
+          }
+        ],
+      })
+      .then((res) => {
+        res.present();
+      });
+  }//end annadirFecha
+
+  //============================================================================================================
+
+  //===============
+  //|Otros Métodos|
+  //===============
+
+  async presentLoading() {
+    let loading = await this.loadingCtrl.create({
+      message: 'Cargando almacenamiento...',
+      spinner: 'bubbles',
+      cssClass:'loader-css-class',
+    });
+    return loading.present();
+  } //end presentLoading
 
   //AÑADIR CANTIDAD DEL JUEGO
   aceptar() {
-
     let juegosEventoId: Array<JuegoEvento> = new Array();
 
     //Elimino el juego ficticio para indicar de que sitio proviene
@@ -350,92 +476,11 @@ export class ListadoAlmacenamientoPage implements OnInit {
     return juego;
   }//end crearJuego
 
-  annadirFecha(juegos: any) {
-    this.alertCtrl
-      .create({
-        cssClass: 'app-alert',
-        header:
-          '¿Qué día será el evento?',
-        inputs: [
-          {
-            name: 'dia',
-            value: new Date(),
-            type: 'date',
-          }
-        ],
-        buttons: [
-
-          {
-            text: 'Cancelar',
-            handler: () => {
-              console.log('Cancelar');
-            },
-          },
-          {
-            text: 'Añadir',
-            handler: (data: any) => {
-              let fecha: Date = new Date()
-              fecha = data['dia']
-              fecha = new Date(fecha)
-              juegos.forEach((data: any) => {
-                this.fireService.insertarJuegosEventos(data, fecha);
-              });
-
-
-            },
-          }
-        ],
-      })
-      .then((res) => {
-        res.present();
-      });
-  }
-
-
-  //CONTROLAR EVENTOS
-  eventoNombre(fecha: any) {
-    this.alertCtrl
-      .create({
-        cssClass: 'app-alert',
-        header:
-          '¿Cuál es el evento?',
-        inputs: [
-          {
-            name: 'nombre',
-            type: 'text',
-            placeholder: 'Nombre del evento',
-
-          }
-        ],
-        buttons: [
-
-          {
-            text: 'Cancelar',
-            handler: () => {
-              console.log('Cancelar');
-            },
-          },
-          {
-            text: 'Añadir',
-            handler: (data: any) => {
-
-              //CONTROLAR QUE YA EXISTA EL EVENTO Y NO REPETIR FECHAS
-
-
-            },
-          }
-        ],
-      })
-      .then((res) => {
-        res.present();
-      });
-  }
 
   deshabilitar() {
     if (this.juegosEvento.length > 0) return false;
     return true;
   } //end deshabilitar
-
 
   borrarTodo() {
     this.juegosEvento = new Array();
@@ -444,4 +489,34 @@ export class ListadoAlmacenamientoPage implements OnInit {
   audio() {
     this.archivo.play()
   }//end audio
+
+  getLastId():string{
+    let array: string[] = this.almacenamientoArray[this.almacenamientoArray.length-1].id.split('-');
+    let num: number = parseInt(array[1]) + 1;
+    
+    let nuevoId=''
+   
+     
+      if (num < 100 && num >= 10) {
+        nuevoId = 'B-0' + num;
+      }
+      else if (num < 10) {
+        nuevoId = 'B-00' + num;
+      }
+    
+    return nuevoId;
+  }//end getLastId
+
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+    });
+    toast.present();
+  } //end Toast
+
+  botonAnnadir(){
+    this.annadirAlmacenamiento(true,new Almacenamiento());
+  }//end botonAnnadir
+  
 } //end class

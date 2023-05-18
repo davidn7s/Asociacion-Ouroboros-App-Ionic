@@ -10,7 +10,6 @@ import { FireServiceProvider } from 'src/providers/api-service/fire-service';
 import { AnnadirJuegoPage } from '../annadir-juego/annadir-juego.page';
 import { AppComponent } from '../app.component';
 import { GlobalMethodsService } from '../global-methods.service';
-import { error } from 'console';
 
 @Component({
   selector: 'app-listado-juegos',
@@ -30,7 +29,7 @@ export class ListadoJuegosPage implements OnInit {
   textoBuscar: string = '';
   globalUsu: Usuario = new Usuario();
 
-  archivo = new Audio('../../assets/audio/alert.wav')
+  private archivo = new Audio('../../assets/audio/alert.wav')
 
   constructor(
     public fireService: FireServiceProvider,

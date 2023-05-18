@@ -29,7 +29,9 @@
   <!-- VISTA ADMINISTRADOR-->
   <div *ngIf="globalUsu.gestor">
     <ion-item class="titulo">
-      <h4>ALMACÉN</h4>
+      <h4>ALMACÉN <ion-button fill="clear" (click)="botonAnnadir()">
+          <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+        </ion-button></h4>
     </ion-item>
 
     <ion-grid fixed>

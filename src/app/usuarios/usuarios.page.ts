@@ -31,7 +31,7 @@ export class UsuariosPage implements OnInit {
 
   private globalUsu: Usuario = new Usuario();
 
-  archivo = new Audio('../../assets/audio/alert.wav')
+  private archivo = new Audio('../../assets/audio/alert.wav')
 
   constructor(
     private modalController: ModalController,

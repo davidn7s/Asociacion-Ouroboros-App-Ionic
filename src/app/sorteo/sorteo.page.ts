@@ -24,7 +24,7 @@ export class SorteoPage implements OnInit {
   contador: number = 0;
   textoBuscar: string = '';
 
-  archivo = new Audio('../../assets/audio/alert.wav')
+  private archivo = new Audio('../../assets/audio/alert.wav')
 
   constructor(
     public modalCtrl: ModalController,

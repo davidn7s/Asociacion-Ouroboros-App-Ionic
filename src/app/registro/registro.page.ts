@@ -31,7 +31,7 @@ export class RegistroPage implements OnInit {
   showPassword = false;
   passwordToggleIcon = 'eye'
 
-  archivo = new Audio('../../assets/audio/error.mp3')
+  private archivo = new Audio('../../assets/audio/error.mp3')
 
   constructor(
     private firebaseService: FireServiceProvider,

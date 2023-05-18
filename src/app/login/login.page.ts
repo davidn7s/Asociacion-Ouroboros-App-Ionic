@@ -25,7 +25,7 @@ export class LoginPage implements OnInit {
   control: boolean = false
   showPassword = false;
   passwordToggleIcon = 'eye'
-  archivo = new Audio('../../assets/audio/error.mp3')
+  private archivo = new Audio('../../assets/audio/error.mp3')
   private listData = []
 
 

@@ -28,35 +28,6 @@ export class FireServiceProvider {
   //| Ficheros  |
   //=============
 
-  uploadPdfDocument(file: File, name: string): Promise<string> {
-    var promise: Promise<string> = new Promise<string>((resolve, reject) => {
-      //Se comprueba que el tipo del fichero pertenece a un tipo pdf
-      if (file.type !== 'application/pdf') {
-        reject('El fichero no es de tipo pdf');
-      }
-      //se calcula el path dentro del storage de firebase
-      //se guarda dentro de una carpeta avatar
-      //el nombre del fichero es igual al id del usuario precedido de la hora dada por getTime
-      const fileStoragePath = `repertorio/${name}`;
-
-      // Image reference
-      const pdfRef = this.afStorage.ref(fileStoragePath);
-
-      // File upload task
-      this.afStorage
-        .upload(fileStoragePath, file)
-        .then((data: any) => {
-          pdfRef.getDownloadURL().subscribe((resp) => {
-            resolve(resp);
-          });
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
-    return promise;
-  } //end uploadPdfDocument
-
   uploadImage(file: File, name: string): Promise<string> {
     var promise: Promise<string> = new Promise<string>((resolve, reject) => {
       //Se comprueba que el tipo del fichero pertenece a un tipo imagen
@@ -605,6 +576,28 @@ export class FireServiceProvider {
     });
     return promise;
   } //end_insertarParticipante
+
+
+
+  insertarAlmacen(datosNuevoAlmacen: Almacenamiento): Promise<Almacenamiento> {
+    let promise = new Promise<Almacenamiento>((resolve, reject) => {
+      this.angularFirestore
+        .collection('Almacenamiento')
+        .doc(datosNuevoAlmacen.id)
+        .set(JSON.parse(JSON.stringify(datosNuevoAlmacen)))
+        .then(() => {
+          resolve(datosNuevoAlmacen);
+          this.presentToast(
+            'Nuevo almacén añadido: ' +
+            datosNuevoAlmacen.ubicacion
+          );
+        })
+        .catch((error: Error) => {
+          reject(error.message);
+        });
+    });
+    return promise;
+  } //end_insertarjuego
 
 
 } //end_class
