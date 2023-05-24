@@ -58,9 +58,8 @@
       </ion-select>
     </ion-item>
 
-    <ion-item>
-      <ion-img *ngIf="juegoNuevo.imagen!=''" src={{juegoNuevo.imagen}} height="50px"></ion-img>
-      <ion-img *ngIf="juegoNuevo.imagen==''" src="..\..\assets\icon\404.png" height="50px"></ion-img>
+    <ion-item *ngIf="juegoNuevo.imagen!=''">
+      <ion-img src={{juegoNuevo.imagen}} height="50px"></ion-img>
     </ion-item>
 
     <ion-input type="text" formControlName="imagen" hidden></ion-input>

@@ -94,13 +94,11 @@ export class ListadoJuegosPage implements OnInit {
     this.fireService.getAlmacenamientoById(juego.almacenamiento)
       .then((data) => {
         data.juegos.splice(data.juegos.indexOf(juego.gameId), 1);
-        console.log(data)
         this.fireService.modificarAlmacen(data).then(() => {
 
           this.fireService
             .eliminarJuego(juego)
             .then(() => {
-              console.log('Juego borrado');
             })
             .catch((error) => {
               console.log(error)

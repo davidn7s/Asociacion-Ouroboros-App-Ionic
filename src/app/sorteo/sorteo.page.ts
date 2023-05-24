@@ -105,7 +105,6 @@ export class SorteoPage implements OnInit {
     this.fireService
       .eliminarParticipante(participante)
       .then(() => {
-        console.log('Participante borrado');
       })
       .catch((error: string) => {
         console.log(error);

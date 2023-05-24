@@ -225,8 +225,6 @@ export class RegistroPage implements OnInit {
     usuario.email = values.email;
     usuario.cargo = values.cargo;
     this.insertar(usuario, values.matching_passwords.password);
-
-    console.log(usuario)
   } //end onSubmit
 
 

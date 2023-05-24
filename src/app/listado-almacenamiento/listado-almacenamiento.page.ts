@@ -89,8 +89,6 @@ export class ListadoAlmacenamientoPage implements OnInit {
     this.fireService
       .eliminarAlmacenamiento(almacenamiento)
       .then(() => {
-
-
         almacenamiento.juegos.forEach((id)=>{
           this.fireService.getJuegoById(id).then((juego)=>{
             juego.almacenamiento="Sin especificar";
@@ -99,7 +97,6 @@ export class ListadoAlmacenamientoPage implements OnInit {
         })
 
         this.getAlmacenamiento();
-        console.log('Almacenamiento borrado');
       })
       .catch((error: string) => {
         console.log(error);
@@ -208,16 +205,17 @@ export class ListadoAlmacenamientoPage implements OnInit {
           header: 'Opciones',
           buttons: [
             {
+              text: 'Cancelar',
+              handler: () => { }
+            },
+            {
               text: 'Ver almacenamientos',
               handler: () => {
                 this.ventanaModalVer(almacenamiento);
               },
             },
-            {
-              text: 'Cancelar',
-              handler: () => { }
-            },
           ],
+          
         })
         .then((res) => {
           res.present();
@@ -374,8 +372,10 @@ export class ListadoAlmacenamientoPage implements OnInit {
         inputs: [
           {
             name: 'dia',
-            value: new Date(),
+            value: new Date().toISOString().split("T")[0],
             type: 'date',
+            min: new Date().toISOString().split("T")[0]
+
           }
         ],
         buttons: [

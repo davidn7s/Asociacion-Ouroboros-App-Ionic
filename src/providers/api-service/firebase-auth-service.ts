@@ -20,7 +20,6 @@ export class FirebaseAuthService {
             if (await this.angularFireAuth.currentUser) {  //antes del logout se comprueba que hay usuario logueado
                 this.angularFireAuth.signOut()
                     .then(() => {
-                        console.log("LOG Out");
                         resolve(null);
                     }).catch((error) => {
                         reject();

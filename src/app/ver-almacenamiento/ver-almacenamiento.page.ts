@@ -36,6 +36,9 @@ export class VerAlmacenamientoPage implements OnInit {
     this.almacenamiento.juegos.forEach((id)=>{
       this.fireService.getJuegoById(id).then((juego)=>{
         this.juegos.push(juego)
+
+        //Ordenar juegos por id
+        this.juegos.sort((a, b) => (a.gameId < b.gameId ? -1 : 1));
       })
     })
   }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, ToastController, MenuController, LoadingController } from '@ionic/angular';
+import { ToastController, MenuController, LoadingController } from '@ionic/angular';
 import { Usuario } from 'src/modelo/Usuario';
 import { FireServiceProvider } from 'src/providers/api-service/fire-service';
 import { FirebaseAuthService } from 'src/providers/api-service/firebase-auth-service';
@@ -38,7 +38,6 @@ export class ModificarUsuarioPropioPage implements OnInit {
 
 
   constructor(private firebaseService: FireServiceProvider,
-    private modalCtrl: ModalController,
     private toastController: ToastController,
     private menu: MenuController,
     private globalVariable: GlobalMethodsService,
@@ -149,16 +148,6 @@ export class ModificarUsuarioPropioPage implements OnInit {
     return sucess;
   }//end onLogin
 
-
-  //======================================================================================================================================
-
-  //==================
-  //|Ventanas modales|
-  //==================
-
-  closeModal() {
-    this.modalCtrl.dismiss();
-  } //end closeModal
 
 
   //======================================================================================================================================
