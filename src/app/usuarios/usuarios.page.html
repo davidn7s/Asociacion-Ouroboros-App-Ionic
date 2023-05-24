@@ -44,9 +44,7 @@
   </ion-select>
 </ion-item>
 <ion-content>
-  <ion-list
-    *ngFor="let usuario of usuariosMuestra | filtro: textoBuscar: 'nombre': 'apellidos' : false"
-  >
+  <ion-list *ngFor="let usuario of usuariosMuestra | filtro: textoBuscar: 'nombre': 'apellidos' : false">
     <ion-card>
       <ion-card-content>
         <ion-grid>
