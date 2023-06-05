@@ -162,33 +162,39 @@ export class AnnadirJuegoPage implements OnInit {
               .then((data) => {
                 //Eliminamos el juego del almacen anterior
                 if (data.id != '') {
+                  
                   data.juegos.splice(data.juegos.indexOf(this.juegoNuevo.gameId), 1);
-                  this.firebaseService.modificarAlmacen(data);
-                }
-              })
-  
-            this.firebaseService.getAlmacenamientoById(this.juegoNuevo.almacenamiento)
-              .then((data) => {
-  
-                if (data.id != '') {
-                  data.juegos.push(this.juegoNuevo.gameId);
+                  console.log(data)
                   this.firebaseService.modificarAlmacen(data)
-                    .then(() => {
-                      this.closeModal()
-                      this.loadingCtrl.dismiss()
+                  .then(()=>{
+                    this.firebaseService.getAlmacenamientoById(this.juegoNuevo.almacenamiento)
+                    .then((data) => {
+        
+                      if (data.id != '') {
+                        data.juegos.push(this.juegoNuevo.gameId);
+                        this.firebaseService.modificarAlmacen(data)
+                          .then(() => {
+                            this.closeModal()
+                            this.loadingCtrl.dismiss()
+                          }).catch((error: string) => {
+                            console.log(error)
+                            this.error(false);
+                            this.closeModal()
+                            this.loadingCtrl.dismiss()
+                          });
+                      }
                     }).catch((error: string) => {
                       console.log(error)
-                      this.error(false);
                       this.closeModal()
                       this.loadingCtrl.dismiss()
-                    });
+                    })
+                  }).catch((error:string)=>{
+                    console.log(error)
+                    this.closeModal()
+                    this.loadingCtrl.dismiss()
+                  })
                 }
-              }).catch((error: string) => {
-                console.log(error)
-                this.closeModal()
-                this.loadingCtrl.dismiss()
               })
-  
           })
           .catch((error: string) => {
             console.log(error);
