@@ -5,8 +5,8 @@
     </ion-buttons>
 
     <!-- Boton de submit-->
-    <ion-buttons slot="end">
-      <ion-button (click)="aceptar()" [disabled]="deshabilitar()">
+    <ion-buttons slot="end" *ngIf="globalUsu.gestor">
+      <ion-button  (click)="aceptar()" [disabled]="deshabilitar()" >
         <ion-icon slot="icon-only" name="checkmark-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -55,7 +55,7 @@
     </ion-item>
 
     <div *ngFor="let j of juegosEvento">
-      <ion-label>{{j.juego.nombre}}</ion-label>
+      <ion-label class="juegoE">{{j.juego.nombre}}</ion-label>
       <ion-button fill="clear" (click)="confirmarJuego(j.juego)">
         <ion-icon name="remove-circle"></ion-icon>
       </ion-button>
