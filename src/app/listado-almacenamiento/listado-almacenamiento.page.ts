@@ -178,7 +178,7 @@ export class ListadoAlmacenamientoPage implements OnInit {
               }
             },
             {
-              text: 'Ver almacenamientos',
+              text: 'Ver almacenamiento',
               handler: () => {
                 this.ventanaModalVer(almacenamiento);
               },
@@ -209,7 +209,7 @@ export class ListadoAlmacenamientoPage implements OnInit {
               handler: () => { }
             },
             {
-              text: 'Ver almacenamientos',
+              text: 'Ver almacenamiento',
               handler: () => {
                 this.ventanaModalVer(almacenamiento);
               },

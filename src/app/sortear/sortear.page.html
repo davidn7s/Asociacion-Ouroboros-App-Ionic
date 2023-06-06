@@ -22,7 +22,7 @@
 
 <ion-item>
   <ion-label position="stacked" color="withe">Cantidad de elegidos</ion-label>
-  <input type="number" placeholder="Cantidad" [(ngModel)]="cantidad" min=1 max={{tope}} />
+  <input type="number" placeholder="Cantidad" [(ngModel)]="cantidad" min=1 max="{{tope}}" (change)="controlSortear($event)"/>
 </ion-item>
 
 <ion-content>

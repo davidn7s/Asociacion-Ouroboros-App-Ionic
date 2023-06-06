@@ -61,6 +61,12 @@ export class SortearPage implements OnInit {
     this.escogidos = new Array();
     let existe = false;
 
+
+
+    if(this.cantidad>this.tope){
+      this.cantidad=this.tope;
+    }
+
     for (let inx = 0; inx < this.cantidad; inx++) {
 
       existe = false
@@ -88,5 +94,15 @@ export class SortearPage implements OnInit {
     } else {
       return true
     }
-  }
+  }//end deshabilitar
+
+
+
+  controlSortear(ev: any){
+    if(this.cantidad>this.tope){
+      this.cantidad=this.tope;
+    }else if (this.cantidad <= 0) {
+      this.cantidad = 1;
+    }
+  }//end controlSortear
 }

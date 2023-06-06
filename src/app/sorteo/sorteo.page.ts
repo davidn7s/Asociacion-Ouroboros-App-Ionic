@@ -95,8 +95,10 @@ export class SorteoPage implements OnInit {
 
         });
 
-        this.loadingCtrl.dismiss()
+        
       });
+
+      this.loadingCtrl.dismiss()
     })
 
   } //end getParticipantes a tiempo real

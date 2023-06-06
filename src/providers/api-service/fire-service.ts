@@ -294,7 +294,11 @@ export class FireServiceProvider {
         .delete()
         .then((data: any) => {
           resolve(true);
-          this.removeFile(image);
+          
+          if(juego.imagen!=""){
+            this.removeFile(image);
+          }
+          
           this.presentToast(
             juego.nombre + ' con ID: ' + juego.gameId + ' ha sido eliminado'
           );

@@ -61,14 +61,14 @@ export class JuegosEventoPage implements OnInit {
     this.presentLoading().then(() => {
       this.fireService.getJuegosEventoTR().subscribe((resultadoConsulta:any) => {
         if (resultadoConsulta.length == 0) {
-          this.presentToast('No hay ningun evento asignado para hoy')
+          this.presentToast('No hay ningún evento asignado para hoy')
           this.loadingCtrl.dismiss()
         }
         this.juegosEvento = new Array<JuegoEvento>();
         this.juegosMuestra = new Array<JuegoEvento>();
         resultadoConsulta.forEach((datos: any) => {
 
-          this.loadingCtrl.dismiss()
+          
           let juego: JuegoEvento = JuegoEvento.createFromJsonObject(datos.payload.doc.data());
           this.juegosEvento.push(juego);
 
@@ -81,7 +81,7 @@ export class JuegosEventoPage implements OnInit {
           this.juegosMuestra.sort((a, b) => (a.juego.gameId < b.juego.gameId ? -1 : 1));
         });
       });
-
+      this.loadingCtrl.dismiss()
     });
 
   } //end getJuegos
